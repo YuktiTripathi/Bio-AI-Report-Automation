@@ -1,0 +1,19 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 41657">
+<circle id="Ellipse 6663" cx="12" cy="12" r="3.25" stroke="white"/>
+<g id="Ellipse 6668">
+<mask id="path-2-inside-1_0_4" fill="white">
+<path d="M11.8938 9.70501C11.3569 9.93106 10.88 10.2791 10.501 10.7215C10.122 11.1639 9.85129 11.6885 9.71033 12.2538L10.1984 12.3755C10.3204 11.8861 10.5548 11.4318 10.883 11.0487C11.2112 10.6657 11.6241 10.3643 12.089 10.1686L11.8938 9.70501Z"/>
+</mask>
+<path d="M11.8938 9.70501C11.3569 9.93106 10.88 10.2791 10.501 10.7215C10.122 11.1639 9.85129 11.6885 9.71033 12.2538L10.1984 12.3755C10.3204 11.8861 10.5548 11.4318 10.883 11.0487C11.2112 10.6657 11.6241 10.3643 12.089 10.1686L11.8938 9.70501Z" stroke="white" stroke-width="2" mask="url(#path-2-inside-1_0_4)"/>
+</g>
+<circle id="Ellipse 6664" cx="21" cy="21" r="2.5" stroke="white"/>
+<circle id="Ellipse 6665" cx="18.75" cy="3" r="2.5" stroke="white"/>
+<circle id="Ellipse 6666" cx="4.125" cy="5.4375" r="2.125" stroke="white"/>
+<circle id="Ellipse 6667" cx="2.25" cy="17.625" r="1.75" stroke="white"/>
+<line id="Line 5" x1="3.85719" y1="16.4583" x2="7.11753" y2="14.3904" stroke="white"/>
+<line id="Line 6" x1="6.13259" y1="6.74089" x2="8.38259" y2="8.61589" stroke="white"/>
+<line id="Line 7" x1="14.8004" y1="7.74603" x2="16.9464" y2="5.12104" stroke="white"/>
+<line id="Line 8" x1="15.9161" y1="15.5839" x2="19.2911" y2="18.9589" stroke="white"/>
+</g>
+</svg>

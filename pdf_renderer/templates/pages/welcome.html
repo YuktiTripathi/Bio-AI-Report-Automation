@@ -1,0 +1,40 @@
+{# Welcome / letter page — Figma node 451:8311; greeting from BioReport JSON #}
+<section class="page welcome-figma" data-template="WelcomeLetter" data-page="2" data-node-id="451:8311">
+  <div class="welcome-figma__bg" aria-hidden="true">
+    <img class="welcome-figma__bg-img" src="{{ assets.welcome_bg }}" alt="" />
+  </div>
+
+  <div class="welcome-figma__hero" aria-hidden="true">
+    <img class="welcome-figma__hero-img" src="{{ assets.welcome_hero }}" alt="" />
+  </div>
+
+  <div class="welcome-figma__copy">
+    <p class="welcome-figma__greeting">
+      Dear
+      <span data-slot="welcome.honorific">{{ vm.honorific }}</span>
+      <span data-slot="welcome.name">{{ vm.patient_name }}</span>,
+    </p>
+    <div class="welcome-figma__body">
+      <p>Congratulations on taking the right step towards your well-being!</p>
+      <p class="welcome-figma__spacer">&nbsp;</p>
+      <p>Your Metsights Metabolic Health Report provides key insights into your risk for common metabolic conditions.</p>
+    </div>
+  </div>
+
+  <div class="welcome-figma__pillars">
+    <div class="welcome-figma__pillar"><span class="welcome-figma__bullet"></span>Prevention</div>
+    <div class="welcome-figma__pillar"><span class="welcome-figma__bullet"></span>Precision Nutrition</div>
+    <div class="welcome-figma__pillar"><span class="welcome-figma__bullet"></span>Age Reversal</div>
+    <div class="welcome-figma__pillar"><span class="welcome-figma__bullet"></span>Longevity</div>
+  </div>
+
+  <p class="welcome-figma__tagline">Your Journey to Better Health Span Starts Here.</p>
+
+  <div class="welcome-figma__footer">
+    <div class="welcome-figma__powered">
+      <span>Poweredby</span>
+      <img src="{{ assets.welcome_metflux }}" alt="MetFlux Research" />
+    </div>
+    <img class="welcome-figma__mark" src="{{ assets.welcome_mark }}" alt="Metsights" />
+  </div>
+</section>

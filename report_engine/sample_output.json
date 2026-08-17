@@ -49,9 +49,9 @@
       {
         "disease_id": "metabolic_syndrome",
         "title": "Metabolic Syndrome",
-        "score": 61,
-        "risk": "High",
-        "band": "61-65"
+        "score": 20,
+        "risk": "Healthy",
+        "band": "16-20"
       },
       {
         "disease_id": "hypertension",
@@ -65,9 +65,9 @@
       {
         "disease_id": "cardiac_health",
         "title": "Cardiac Health",
-        "score": 8,
-        "risk": "Healthy",
-        "band": "6-10"
+        "score": 41,
+        "risk": "Increased Risk",
+        "band": "41-45"
       },
       {
         "disease_id": "oxidative_stress",
@@ -96,17 +96,21 @@
     {
       "disease_id": "nafld",
       "title": "Non-Alcoholic Fatty Liver Disease",
-      "overview": "Non-Alcoholic Fatty Liver Disease (NAFLD) is a condition where excess fat builds up in the liver in people who drink little or no alcohol, commonly linked to obesity, diabetes, and metabolic syndrome. If left untreated, it can progress from simple fatty liver to inflammation, fibrosis, cirrhosis, and even liver failure.",
+      "overview": "Non-alcoholic fatty liver disease (NAFLD) is the term for a range of conditions caused by a build-up of fat in the liver. It's usually seen in people who are overweight or obese.",
       "current_status": {
-        "score": 67,
-        "risk": "High",
-        "band": "66-70",
-        "percentile": 72,
+        "score": 35,
+        "risk": "Increased Risk",
+        "band": "31-35",
+        "percentile": 25,
         "healthy_percentile": 35,
-        "lifestyle_contribution": 40,
-        "interpretation": "Your findings suggest substantial liver fat with an increased risk of inflammation or early scarring. Prompt medical review is recommended.",
+        "lifestyle_contribution": 12,
+        "interpretation": "Your findings suggest early fatty liver changes with an increased risk of progression. Lifestyle improvements and regular monitoring are recommended.",
         "clinical_warning": "Timely medical review is recommended for ongoing liver monitoring."
       },
+      "contributing_factors": [
+        "Elevated blood sugar",
+        "Mildly low total protein and globulin"
+      ],
       "lifestyle": {
         "tips": [
           "Aim for about 10% weight loss under medical guidance.",
@@ -153,15 +157,19 @@
       "title": "Metabolic Syndrome",
       "overview": "Metabolic syndrome is a cluster of conditions including increased waist circumference, high blood sugar, elevated blood pressure, abnormal cholesterol, and high triglycerides.",
       "current_status": {
-        "score": 61,
-        "risk": "High",
-        "band": "61-65",
-        "percentile": 65,
+        "score": 20,
+        "risk": "Healthy",
+        "band": "16-20",
+        "percentile": 13,
         "healthy_percentile": 38,
-        "lifestyle_contribution": 35,
-        "interpretation": "Your results indicate a higher metabolic risk with multiple contributing factors requiring closer attention.",
+        "lifestyle_contribution": 15,
+        "interpretation": "Your score is still healthy but nearing the upper end of this range. Improving lifestyle quality now can reduce future metabolic risk.",
         "clinical_warning": "Persistent or worsening metabolic abnormalities should be medically reviewed even without symptoms."
       },
+      "contributing_factors": [
+        "Elevated blood sugar",
+        "Central adiposity risk"
+      ],
       "lifestyle": {
         "tips": [
           "Exercise regularly at a comfortable intensity.",
@@ -206,17 +214,21 @@
     {
       "disease_id": "hypertension",
       "title": "Hypertension",
-      "overview": "",
+      "overview": "Hypertension, also known as high or raised blood pressure, is a condition in which the blood vessels have persistently raised pressure.",
       "current_status": {
-        "score": 58,
-        "risk": "High",
-        "band": "56-60",
-        "percentile": 60,
+        "score": 30,
+        "risk": "Increased Risk",
+        "band": "26-30",
+        "percentile": 28,
         "healthy_percentile": 40,
-        "lifestyle_contribution": 25,
-        "interpretation": "This score suggests a substantial blood-pressure risk burden that should not be managed by lifestyle changes alone if measurements are persistently high. Keep a reliable record of readings and arrange timely healthcare follow-up to review the full picture.",
+        "lifestyle_contribution": 35,
+        "interpretation": "Your blood-pressure risk is in an increased range. Consistent lifestyle changes and regular monitoring can help improve this score.",
         "clinical_warning": "Timely healthcare follow-up is appropriate if home readings remain elevated or are rising. Urgent assessment is needed when severe symptoms occur with a very high reading."
       },
+      "contributing_factors": [
+        "Low-normal magnesium",
+        "Blood sugar as future risk"
+      ],
       "lifestyle": {
         "tips": [
           "Make lower-sodium meals, regular exercise, and weight management central weekly goals.",
@@ -261,17 +273,21 @@
     {
       "disease_id": "obesity",
       "title": "Obesity",
-      "overview": "",
+      "overview": "Obesity means your body has more fat than it should, which can put pressure on your heart, joints, and organs, increasing the risk of diabetes, heart disease, and mobility issues.",
       "current_status": {
-        "score": 55,
-        "risk": "High",
-        "band": "51-55",
-        "percentile": 58,
+        "score": 18,
+        "risk": "Healthy",
+        "band": "16-20",
+        "percentile": 6,
         "healthy_percentile": 42,
-        "lifestyle_contribution": 45,
-        "interpretation": "Your score indicates high obesity-related metabolic risk. A structured weight-management plan with medical support can improve your health.",
+        "lifestyle_contribution": 15,
+        "interpretation": "Your obesity-related score remains in a healthy range. Maintaining current habits can help preserve this result.",
         "clinical_warning": "Consult your healthcare provider if metabolic markers are abnormal or weight loss remains difficult."
       },
+      "contributing_factors": [
+        "Lean body composition",
+        "Low HDL despite leanness"
+      ],
       "lifestyle": {
         "tips": [
           "Aim for gradual weight loss.",
@@ -316,17 +332,21 @@
     {
       "disease_id": "dyslipidemia",
       "title": "Dyslipidemia",
-      "overview": "Dyslipidemia is a condition in which the levels of cholesterol or triglycerides in the blood become unhealthy. If left unmanaged, it can gradually increase the risk of heart attack, stroke, and other cardiovascular diseases.",
+      "overview": "Dyslipidemia refers to abnormal levels of lipids in the bloodstream, which poses a significant risk factor for cardiovascular (CV) diseases.",
       "current_status": {
-        "score": 44,
-        "risk": "Increased",
-        "band": "41-45",
-        "percentile": 52,
+        "score": 35,
+        "risk": "Increased Risk",
+        "band": "31-35",
+        "percentile": 20,
         "healthy_percentile": 50,
-        "lifestyle_contribution": 28,
+        "lifestyle_contribution": 18,
         "interpretation": "Your cholesterol or triglycerides are noticeably above the healthy range. This increased-risk stage calls for consistent lifestyle changes and regular monitoring to reduce future cardiovascular risk.",
         "clinical_warning": "Consult your doctor for regular monitoring. This is a preventive step, not an emergency."
       },
+      "contributing_factors": [
+        "Sedentary habits",
+        "Insufficient healthy dietary fats"
+      ],
       "lifestyle": {
         "tips": [
           "Aim for 7-10% weight loss if overweight.",
@@ -371,17 +391,22 @@
     {
       "disease_id": "type2_diabetes",
       "title": "Type 2 Diabetes",
-      "overview": "Type 2 diabetes is a metabolic disorder in which the body becomes resistant to insulin or does not produce enough insulin to maintain healthy blood sugar levels. Persistently elevated blood glucose can damage the eyes, kidneys, nerves, heart, and blood vessels over time.",
+      "overview": "Type 2 diabetes is a condition where the body doesn't use insulin properly, leading to high blood sugar levels. You are more likely to develop type 2 diabetes if you have risk factors, such as overweight or obesity, and a family history of the disease.",
       "current_status": {
-        "score": 38,
-        "risk": "Increased",
-        "band": "36-40",
-        "percentile": 48,
+        "score": 20,
+        "risk": "Healthy",
+        "band": "16-20",
+        "percentile": 5,
         "healthy_percentile": 55,
-        "lifestyle_contribution": 30,
-        "interpretation": "Your results suggest significant insulin resistance and rising blood sugar. Early intervention can still prevent progression.",
+        "lifestyle_contribution": 15,
+        "interpretation": "Your type 2 diabetes-related score remains in a healthy range. Maintaining current habits can help preserve this result.",
         "clinical_warning": "Consult your doctor for monitoring and lifestyle guidance."
       },
+      "contributing_factors": [
+        "Vit D insufficiency",
+        "Systemic inflammation",
+        "Low-normal fasting insulin"
+      ],
       "lifestyle": {
         "tips": [
           "Aim for about 7% weight loss if overweight.",
@@ -426,17 +451,22 @@
     {
       "disease_id": "thyroid_health",
       "title": "Thyroid Health",
-      "overview": "The thyroid gland produces hormones that regulate metabolism, energy production, body temperature, and many essential body functions. Changes in thyroid function can affect multiple organs and influence weight, heart rate, mood, and overall metabolic health.",
+      "overview": "The thyroid is a butterfly-shaped gland located in the front of the neck. It produces hormones that play a key role in regulating blood pressure, body temperature, heart rate, metabolism and the reaction of the body to other hormones.",
       "current_status": {
-        "score": 18,
+        "score": 0,
         "risk": "Healthy",
-        "band": "16-20",
-        "percentile": 25,
+        "band": "0-5",
+        "percentile": 4,
         "healthy_percentile": 80,
-        "lifestyle_contribution": 12,
-        "interpretation": "Your score remains healthy but is approaching the upper end of this range. Strengthening preventive habits now may help reduce future thyroid-related risk.",
+        "lifestyle_contribution": 0,
+        "interpretation": "Your thyroid-related score is in a healthy range. Maintaining current habits can help preserve this result.",
         "clinical_warning": "Persistent symptoms or unexplained weight changes should be reviewed by a healthcare professional."
       },
+      "contributing_factors": [
+        "Chronic inflammation",
+        "Vitamin B12 deficiency",
+        "Vit D insufficiency"
+      ],
       "lifestyle": {
         "tips": [
           "Exercise consistently.",
@@ -481,17 +511,22 @@
     {
       "disease_id": "oxidative_stress",
       "title": "Oxidative Stress",
-      "overview": "Oxidative stress occurs when harmful free radicals outweigh the body's antioxidant defenses, leading to gradual damage of cells and tissues. Over time, this imbalance may contribute to aging and increase the risk of several chronic diseases.",
+      "overview": "Oxidative stress is an imbalance in your body where there are too many unstable molecules called free radicals and not enough antioxidants to neutralize them. This imbalance can damage cells and tissues, potentially contributing to various health problems.",
       "current_status": {
-        "score": 12,
-        "risk": "Healthy",
-        "band": "11-15",
-        "percentile": 20,
+        "score": 32,
+        "risk": "Increased Risk",
+        "band": "31-35",
+        "percentile": 4,
         "healthy_percentile": 90,
-        "lifestyle_contribution": 10,
-        "interpretation": "Your score remains healthy but offers an opportunity to further strengthen antioxidant-supporting habits.",
+        "lifestyle_contribution": 8,
+        "interpretation": "Your oxidative stress score is in an increased-risk range. Strengthening antioxidant-supporting habits and addressing nutrient gaps can help improve this score.",
         "clinical_warning": "Consult your doctor if metabolic markers become abnormal or symptoms persist."
       },
+      "contributing_factors": [
+        "Vitamin D insufficiency",
+        "Vitamin B12 deficiency",
+        "Elevated IgE"
+      ],
       "lifestyle": {
         "tips": [
           "Prioritize restorative sleep.",
@@ -536,17 +571,22 @@
     {
       "disease_id": "cardiac_health",
       "title": "Cardiac Health",
-      "overview": "Cardiac health reflects how well your heart and blood vessels support healthy blood circulation. This score estimates your cardiovascular risk based on factors like blood pressure, cholesterol, blood sugar, weight, and lifestyle.",
+      "overview": "Cardiac health, also known as cardiovascular health, refers to the overall well-being and proper functioning of the heart and blood vessels. It encompasses the circulatory system's ability to efficiently pump blood, delivering oxygen and nutrients throughout the body.",
       "current_status": {
-        "score": 8,
-        "risk": "Healthy",
-        "band": "6-10",
-        "percentile": 15,
+        "score": 41,
+        "risk": "Increased Risk",
+        "band": "41-45",
+        "percentile": 27,
         "healthy_percentile": 92,
-        "lifestyle_contribution": 8,
-        "interpretation": "Your heart health is very good, with healthy blood pressure, cholesterol, and circulation. Staying consistent with your current habits will help maintain these results.",
-        "clinical_warning": "No additional follow-up is needed beyond routine check-ups. Seek medical advice if you develop chest pain or unexplained breathlessness."
+        "lifestyle_contribution": 22,
+        "interpretation": "Your results suggest an increased cardiovascular risk. Lifestyle improvements and regular monitoring can help protect heart and vessel health.",
+        "clinical_warning": "Seek medical advice if you develop chest pain or unexplained breathlessness."
       },
+      "contributing_factors": [
+        "Vitamin D insufficiency",
+        "Vitamin B12 deficiency",
+        "Elevated IgE"
+      ],
       "lifestyle": {
         "tips": [
           "Stay smoke-free.",

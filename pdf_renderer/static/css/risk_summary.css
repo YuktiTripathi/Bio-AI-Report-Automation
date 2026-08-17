@@ -1,0 +1,297 @@
+/* Risk Summary & Actionable Insights — Figma node 379:119787 (595×842) */
+
+.page.rs-figma,
+.rs-figma {
+  width: 595px;
+  height: 842px;
+  padding: 0;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #063533;
+  overflow: hidden;
+  position: relative;
+  page-break-after: always;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+}
+
+.rs-figma__title {
+  position: absolute;
+  left: 38px;
+  top: 30px;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 400;
+  color: #cb203b;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.rs-figma__title-line {
+  position: absolute;
+  left: 418px;
+  top: 44px;
+  width: 139px;
+  height: 1px;
+  display: block;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Content column: cards + disclaimer; footer reserved below */
+.rs-figma__body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 64px;
+  bottom: 52px;
+  box-sizing: border-box;
+  padding: 0 34px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.rs-figma__cards {
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.rs-figma__card {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid #d0d0d0;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 10px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.rs-figma__head {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex: 0 0 auto;
+}
+
+.rs-figma__icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  flex: 0 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 0.5px solid transparent;
+}
+
+.rs-figma__icon-wrap--healthy {
+  background: rgba(109, 222, 128, 0.2);
+  border-color: #6dde80;
+}
+
+.rs-figma__icon-wrap--increased {
+  background: rgba(248, 210, 50, 0.25);
+  border-color: #f8d232;
+}
+
+.rs-figma__icon-wrap--high {
+  background: rgba(252, 148, 58, 0.2);
+  border-color: #fc943a;
+}
+
+.rs-figma__icon-wrap--very_high {
+  background: rgba(198, 32, 59, 0.15);
+  border-color: #c6203b;
+}
+
+.rs-figma__icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+}
+
+.rs-figma__meta {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rs-figma__name {
+  margin: 0;
+  font-family: "DM Serif Display", "Times New Roman", Times, serif;
+  font-style: italic;
+  font-size: 14px;
+  font-weight: 400;
+  color: #cc203b;
+  line-height: 1.2;
+}
+
+.rs-figma__risk-line {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: #063533;
+  line-height: 1.2;
+}
+
+.rs-figma__bar {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  border: 1px solid #d0d0d0;
+  background: #f3f3f3;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Full green→yellow→orange→red bar (same asset as disease detail). */
+.rs-figma__bar-grad {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+/* Mask unused portion so only left score% of the gradient shows. */
+.rs-figma__bar-remainder {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: #f3f3f3;
+  pointer-events: none;
+}
+
+.rs-figma__insights-title {
+  margin: 0;
+  font-family: "DM Serif Display", "Times New Roman", Times, serif;
+  font-style: italic;
+  font-size: 14px;
+  font-weight: 400;
+  color: #c6203b;
+  line-height: 1.2;
+}
+
+.rs-figma__tips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: flex-start;
+  overflow: visible;
+  flex: 0 0 auto;
+}
+
+.rs-figma__tip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  border-radius: 24px;
+  background: #e5f3f6;
+  border: 1px solid #063533;
+  color: #063533;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: normal;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.rs-figma__disclaimer {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(229, 243, 246, 0.25);
+  margin-top: 0;
+}
+
+.rs-figma__disclaimer p {
+  margin: 0;
+  font-size: 8px;
+  font-weight: 400;
+  color: #666666;
+  line-height: 1.35;
+}
+
+/* Footer: solid bar, rule on top edge, content vertically centered */
+.rs-figma__footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 52px;
+  z-index: 3;
+  background: #e5f3f6;
+  border-top: 1px solid #d0d0d0;
+  box-sizing: border-box;
+}
+
+.rs-figma__footer-inner {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 32px;
+  box-sizing: border-box;
+}
+
+.rs-figma__powered {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  font-size: 12px;
+  font-style: italic;
+  color: #000000;
+  line-height: 1;
+}
+
+.rs-figma__powered img {
+  height: 14px;
+  width: auto;
+  display: block;
+}
+
+.rs-figma__page-no {
+  margin: 0;
+  font-size: 12px;
+  color: #000000;
+  line-height: 1;
+  text-align: center;
+}
+
+.rs-figma__footer-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.rs-figma__mark {
+  width: 20px;
+  height: 20px;
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+}

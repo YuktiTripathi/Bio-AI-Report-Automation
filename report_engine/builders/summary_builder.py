@@ -12,6 +12,20 @@ from modules.bioai_report.report_engine.models.report import (
 from modules.bioai_report.report_engine.utils.insight_dedupe import dedupe_insights
 
 
+def _insights_for_section(
+    section: DiseaseSection,
+    *,
+    limit: int = config.TOP_INSIGHTS_PER_RISK,
+) -> list[str]:
+    """Per-disease tips for PDF page 10 — lifestyle + diet + exercise, deduped."""
+    candidates = [
+        *section.lifestyle.tips,
+        *section.nutrition.recommendations,
+        *section.lifestyle.exercise,
+    ]
+    return dedupe_insights(candidates, limit=limit)
+
+
 def _to_highlight(section: DiseaseSection) -> DiseaseHighlight:
     return DiseaseHighlight(
         disease_id=section.disease_id,
@@ -19,6 +33,8 @@ def _to_highlight(section: DiseaseSection) -> DiseaseHighlight:
         score=section.score,
         risk=section.risk,
         band=section.band,
+        percentile=section.current_status.percentile,
+        insights=_insights_for_section(section),
     )
 
 

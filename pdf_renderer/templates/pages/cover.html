@@ -1,0 +1,44 @@
+{# Male/Female cover — Figma node 451:6916 layout; values from BioReport JSON #}
+<section class="page cover-figma" data-template="CoverPage" data-page="1" data-node-id="451:6916">
+  <div class="cover-figma__bg" aria-hidden="true">
+    <img class="cover-figma__bg-img" src="{{ assets.cover_bg }}" alt="" />
+  </div>
+
+  <div class="cover-figma__center">
+    <div class="cover-figma__logo" aria-label="Super Shyft">
+      <img class="cover-figma__logo-layer cover-figma__logo-layer--2" src="{{ assets.logo_group2 }}" alt="" />
+      <img class="cover-figma__logo-layer cover-figma__logo-layer--4" src="{{ assets.logo_group4 }}" alt="" />
+      <img class="cover-figma__logo-layer cover-figma__logo-layer--5" src="{{ assets.logo_group5 }}" alt="" />
+      <img class="cover-figma__logo-layer cover-figma__logo-layer--3" src="{{ assets.logo_group3 }}" alt="" />
+    </div>
+
+    <div class="cover-figma__meta">
+      <div class="cover-figma__name-block">
+        <p class="cover-figma__label" data-slot="cover.name_label">Name</p>
+        <p class="cover-figma__value cover-figma__value--name" data-slot="cover.name">{{ vm.patient_name }}</p>
+      </div>
+
+      <div class="cover-figma__age-gender">
+        <div class="cover-figma__field cover-figma__field--age">
+          <p class="cover-figma__label">Age</p>
+          <p class="cover-figma__value" data-slot="cover.age">{{ vm.patient_age }}</p>
+        </div>
+        <img class="cover-figma__divider" src="{{ assets.divider }}" alt="" />
+        <div class="cover-figma__field cover-figma__field--gender">
+          <p class="cover-figma__label">Gender</p>
+          <p class="cover-figma__value" data-slot="cover.gender">{{ vm.patient_gender }}</p>
+        </div>
+      </div>
+
+      <p class="cover-figma__assessment">
+        <span class="cover-figma__assessment-label">Assessment Taken on</span>
+        <span class="cover-figma__assessment-date" data-slot="cover.assessment_date">{{ vm.assessment_date }}</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="cover-figma__footer">
+    <p>Powered By MetFlux Research</p>
+    <p>Copyright 2023 by MetFlux Research Pvt. Ltd. | All rights reserved</p>
+  </div>
+</section>

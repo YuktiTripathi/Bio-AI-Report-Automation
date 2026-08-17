@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class PatientInfo(BaseModel):
@@ -34,7 +34,7 @@ class PatientInfo(BaseModel):
 
 
 class DiseaseHighlight(BaseModel):
-    """Compact disease reference used in the executive summary."""
+    """Compact disease reference used in the executive summary / PDF page 10."""
 
     model_config = ConfigDict(extra="ignore")
 
@@ -43,6 +43,8 @@ class DiseaseHighlight(BaseModel):
     score: int
     risk: str
     band: str
+    percentile: float | int | None = None
+    insights: list[str] = Field(default_factory=list)
 
 
 class ExecutiveSummary(BaseModel):
@@ -115,6 +117,23 @@ class DiseaseSection(BaseModel):
     nutrition: DiseaseNutrition
     monitoring: DiseaseMonitoring
     positive_takeaway: str = ""
+    contributing_factors: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _coerce_result_factors(cls, data: Any) -> Any:
+        """Accept engine shape ``result_factors.factors`` as contributing_factors."""
+        if not isinstance(data, dict):
+            return data
+        existing = data.get("contributing_factors")
+        if isinstance(existing, list) and existing:
+            return data
+        result_factors = data.get("result_factors")
+        if isinstance(result_factors, dict):
+            factors = result_factors.get("factors")
+            if isinstance(factors, list):
+                data = {**data, "contributing_factors": factors}
+        return data
 
     @property
     def score(self) -> int:

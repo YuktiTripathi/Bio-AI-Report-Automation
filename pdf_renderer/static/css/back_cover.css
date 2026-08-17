@@ -1,0 +1,269 @@
+/* Back cover — Figma node 451:6850 (595×842). Static for every PDF. */
+
+.page.bc-figma,
+.bc-figma {
+  width: 595px;
+  height: 842px;
+  padding: 0;
+  margin: 0 auto;
+  background: #000000;
+  color: #ffffff;
+  overflow: hidden;
+  position: relative;
+  page-break-after: always;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+}
+
+.bc-figma__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bc-figma__bg-img {
+  position: absolute;
+  height: 100%;
+  left: -1.86%;
+  top: 0.01%;
+  width: 174.17%;
+  max-width: none;
+  object-fit: cover;
+}
+
+/* Same decorative treatment as disease divider / Figma overlay */
+.bc-figma__deco {
+  position: absolute;
+  top: -1.43%;
+  right: -44.09%;
+  bottom: -24.13%;
+  left: -23.87%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+
+.bc-figma__deco-rot {
+  flex: none;
+  width: 1056px;
+  height: 401px;
+  transform: rotate(-48.58deg) scaleX(-1);
+  transform-origin: center center;
+}
+
+.bc-figma__deco-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: fill;
+}
+
+.bc-figma__hero {
+  position: absolute;
+  left: 48.5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 497px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 29px;
+  z-index: 2;
+  text-align: center;
+}
+
+.bc-figma__logo {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.bc-figma__logo-layer {
+  position: absolute;
+  display: block;
+  max-width: none;
+}
+
+.bc-figma__logo-layer--ring-outer {
+  inset: 0.69% 0.61%;
+  width: 98.78%;
+  height: 98.62%;
+}
+
+.bc-figma__logo-layer--ring {
+  inset: 0.69% 0.62% 0.69% 0.61%;
+  width: 98.77%;
+  height: 98.62%;
+}
+
+.bc-figma__logo-layer--inner {
+  inset: 4.51% 2.19%;
+  width: 95.62%;
+  height: 90.98%;
+}
+
+.bc-figma__logo-layer--text {
+  inset: 37.48% 14.92% 34.56% 14.92%;
+  width: 70.16%;
+  height: 27.96%;
+}
+
+.bc-figma__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.bc-figma__title {
+  margin: 0;
+  font-family: "DM Sans", Inter, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: normal;
+  color: #ffffff;
+  text-align: center;
+}
+
+.bc-figma__title-line {
+  display: block;
+}
+
+.bc-figma__title-accent {
+  display: block;
+  font-weight: 800;
+  /* Solid brand red — background-clip:text paints a red bar in Chromium PDF */
+  color: #e02d4a;
+  -webkit-text-fill-color: #e02d4a;
+}
+
+.bc-figma__subtitle {
+  margin: 0;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: normal;
+  color: #dddddd;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Figma 451:6902 — contact block at x=49 (left-aligned with page margin) */
+.bc-figma__contact {
+  position: absolute;
+  left: 49px;
+  top: 629px;
+  width: 241px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  z-index: 2;
+}
+
+.bc-figma__contact-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: normal;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.bc-figma__contact-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: block;
+  object-fit: contain;
+}
+
+/* Figma 451:6892 — social at x=432 */
+.bc-figma__social {
+  position: absolute;
+  left: 432px;
+  top: 663px;
+  width: 114px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  z-index: 2;
+}
+
+.bc-figma__social-label {
+  margin: 0;
+  font-family: "DM Sans", Inter, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 18px;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.bc-figma__social-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.bc-figma__social-icon {
+  width: 40px;
+  height: 40px;
+  display: block;
+  object-fit: contain;
+}
+
+.bc-figma__footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.bc-figma__powered {
+  position: absolute;
+  left: 40px;
+  bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffffff;
+  font-size: 12px;
+  font-style: italic;
+  line-height: normal;
+}
+
+.bc-figma__powered img {
+  height: 14px;
+  width: auto;
+  display: block;
+}
+
+.bc-figma__mark {
+  position: absolute;
+  right: 32px;
+  bottom: 40px;
+  width: 20px;
+  height: 20px;
+  display: block;
+  object-fit: cover;
+}
+
+body.preview-mode .bc-figma {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}

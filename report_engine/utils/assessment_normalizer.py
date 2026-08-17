@@ -46,6 +46,21 @@ def _as_optional_number(value: Any) -> float | int | None:
     return None
 
 
+def _parse_contributing_factors(raw: Any) -> list[str]:
+    if isinstance(raw, dict):
+        raw = raw.get("factors")
+    if not isinstance(raw, list):
+        return []
+    factors: list[str] = []
+    for item in raw:
+        if not isinstance(item, str):
+            continue
+        text = item.strip()
+        if text:
+            factors.append(text)
+    return factors
+
+
 def _parse_diseases(raw_diseases: Any) -> list[AssessmentDisease]:
     if not isinstance(raw_diseases, list):
         return []
@@ -56,6 +71,9 @@ def _parse_diseases(raw_diseases: Any) -> list[AssessmentDisease]:
         code = entry.get("code")
         if not isinstance(code, str) or not code.strip():
             continue
+        factors_raw = entry.get("contributing_factors")
+        if not factors_raw:
+            factors_raw = entry.get("result_factors")
         diseases.append(
             AssessmentDisease(
                 code=code.strip(),
@@ -69,6 +87,7 @@ def _parse_diseases(raw_diseases: Any) -> list[AssessmentDisease]:
                 lifestyle_contribution_message=_as_optional_str(
                     entry.get("lifestyle_contribution_message")
                 ),
+                contributing_factors=_parse_contributing_factors(factors_raw),
             )
         )
     return diseases

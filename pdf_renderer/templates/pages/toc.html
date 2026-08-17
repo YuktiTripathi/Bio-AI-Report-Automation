@@ -1,0 +1,38 @@
+{# Table of Contents — Figma node 451:5564 #}
+<section class="page toc-figma" data-template="TableOfContents" data-page="3" data-node-id="451:5564">
+  <img class="toc-figma__deco" src="{{ assets.toc_deco }}" alt="" aria-hidden="true" />
+
+  <h1 class="toc-figma__title">Table of Contents</h1>
+  <img class="toc-figma__title-line" src="{{ assets.toc_title_line }}" alt="" aria-hidden="true" />
+
+  <p class="toc-figma__subtitle">Your smart report includes the following section</p>
+
+  <div class="toc-figma__table" role="table">
+    <div class="toc-figma__head" role="row">
+      <div class="toc-figma__cell toc-figma__cell--no" role="columnheader">Sr. No.</div>
+      <div class="toc-figma__cell toc-figma__cell--section" role="columnheader">Section</div>
+      <div class="toc-figma__cell toc-figma__cell--page" role="columnheader">Page No</div>
+    </div>
+    <img class="toc-figma__rule toc-figma__rule--head" src="{{ assets.toc_row_line }}" alt="" aria-hidden="true" />
+
+    {% for row in toc_rows %}
+    <div class="toc-figma__row toc-figma__row--{{ loop.index }}" role="row" data-toc-id="{{ row.id }}">
+      <div class="toc-figma__cell toc-figma__cell--no" role="cell">{{ row.sr }}</div>
+      <div class="toc-figma__cell toc-figma__cell--section" role="cell">{{ row.section }}</div>
+      <div class="toc-figma__cell toc-figma__cell--page" role="cell"{% if row.dynamic_pages %} data-slot="toc.disease_page_range"{% endif %}>{{ row.page }}</div>
+    </div>
+    <img class="toc-figma__rule toc-figma__rule--{{ loop.index }}" src="{{ assets.toc_row_line }}" alt="" aria-hidden="true" />
+    {% endfor %}
+  </div>
+
+  <div class="toc-figma__footer">
+    <img class="toc-figma__footer-bg" src="{{ assets.toc_footer_bg }}" alt="" aria-hidden="true" />
+    <img class="toc-figma__footer-rule" src="{{ assets.toc_footer_rule }}" alt="" aria-hidden="true" />
+    <div class="toc-figma__powered">
+      <span>Poweredby</span>
+      <img src="{{ assets.toc_metflux }}" alt="MetFlux Research" />
+    </div>
+    <p class="toc-figma__page-no">03</p>
+    <img class="toc-figma__mark" src="{{ assets.toc_mark }}" alt="Metsights" />
+  </div>
+</section>

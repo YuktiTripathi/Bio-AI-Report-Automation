@@ -1,0 +1,47 @@
+{# Lifestyle Diseases Covered — Figma node 451:5615 #}
+<section class="page ldi-figma" data-template="LifestyleDiseasesIndex" data-page="4" data-node-id="451:5615">
+  <img class="ldi-figma__deco" src="{{ assets.ldi_deco }}" alt="" aria-hidden="true" />
+
+  <h1 class="ldi-figma__title">Lifestyle Diseases Covered</h1>
+  <img class="ldi-figma__title-line" src="{{ assets.ldi_title_line }}" alt="" aria-hidden="true" />
+
+  <div class="ldi-figma__timeline" data-slot="index.disease_tiles">
+    {% for d in vm.index_diseases %}
+    {% set side = 'left' if loop.index is odd else 'right' %}
+    <div class="ldi-figma__row ldi-figma__row--{{ side }}" data-disease-id="{{ d.disease_id }}">
+      <div class="ldi-figma__side ldi-figma__side--left">
+        {% if side == 'left' %}
+        <div class="ldi-figma__item">
+          <img class="ldi-figma__icon" src="{{ assets['icon_' ~ d.disease_id] }}" alt="" width="56" height="56" />
+          <p class="ldi-figma__label">{{ d.title }}</p>
+        </div>
+        <img class="ldi-figma__connector" src="{{ assets.ldi_connector }}" alt="" width="100" height="2" aria-hidden="true" />
+        {% endif %}
+      </div>
+
+      <div class="ldi-figma__badge" aria-hidden="true">{{ loop.index }}</div>
+
+      <div class="ldi-figma__side ldi-figma__side--right">
+        {% if side == 'right' %}
+        <img class="ldi-figma__connector" src="{{ assets.ldi_connector }}" alt="" width="100" height="2" aria-hidden="true" />
+        <div class="ldi-figma__item">
+          <img class="ldi-figma__icon" src="{{ assets['icon_' ~ d.disease_id] }}" alt="" width="56" height="56" />
+          <p class="ldi-figma__label">{{ d.title }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="ldi-figma__footer">
+    <img class="ldi-figma__footer-bg" src="{{ assets.ldi_footer_bg }}" alt="" aria-hidden="true" />
+    <img class="ldi-figma__footer-rule" src="{{ assets.ldi_footer_rule }}" alt="" aria-hidden="true" />
+    <div class="ldi-figma__powered">
+      <span>Poweredby</span>
+      <img src="{{ assets.ldi_metflux }}" alt="MetFlux Research" />
+    </div>
+    <p class="ldi-figma__page-no">04</p>
+    <img class="ldi-figma__mark" src="{{ assets.ldi_mark }}" alt="Metsights" />
+  </div>
+</section>

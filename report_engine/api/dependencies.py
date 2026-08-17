@@ -5,6 +5,7 @@ from __future__ import annotations
 from functools import lru_cache
 
 from modules.assessments.repository import AssessmentsRepository
+from modules.bioai_report.pdf_renderer.service import PdfRenderService
 from modules.bioai_report.report_engine.knowledge_base.loader import KnowledgeBaseStore
 from modules.bioai_report.report_engine.services.assessment_service import AssessmentFetchService
 from modules.bioai_report.report_engine.services.patient_service import PatientProfileService
@@ -38,3 +39,8 @@ def get_bioreport_service() -> BioReportService:
         patient_service=get_patient_profile_service(),
         kb_store=get_knowledge_base_store(),
     )
+
+
+@lru_cache(maxsize=1)
+def get_pdf_render_service() -> PdfRenderService:
+    return PdfRenderService()

@@ -1,0 +1,196 @@
+{# Disease detail — Figma node 451:4652 (Metabolic Syndrome layout; reused per disease) #}
+<section
+  class="page ddt-figma"
+  data-template="DiseaseDetail"
+  data-page="{{ d.page_no }}"
+  data-disease-id="{{ d.disease_id }}"
+  data-node-id="451:4652"
+>
+  <header class="ddt-figma__header">
+    <img
+      class="ddt-figma__disease-icon"
+      src="{{ assets['ddt_icon_' ~ d.disease_id] }}"
+      alt=""
+      width="48"
+      height="48"
+    />
+    <h1 class="ddt-figma__title" data-slot="disease.title">{{ d.title }}</h1>
+    <img class="ddt-figma__title-line" src="{{ assets.ddt_title_line }}" alt="" aria-hidden="true" />
+  </header>
+
+  <div class="ddt-figma__body">
+    <div class="ddt-figma__card">
+      <h2 class="ddt-figma__section-title">What is {{ d.title }}?</h2>
+      <p class="ddt-figma__overview" data-slot="disease.overview">{{ d.overview or "—" }}</p>
+    </div>
+
+    <div class="ddt-figma__card ddt-figma__card--score">
+      <h2 class="ddt-figma__section-title">Current Risk Score</h2>
+      <div class="ddt-figma__score-row">
+        <div class="ddt-figma__gauge" data-slot="disease.score_badge">
+          {{ disease_score_gauge_svg(d.score, color=d.gauge_color, risk_label=d.risk_label, size=100) | safe }}
+        </div>
+        <div class="ddt-figma__score-meta">
+          <div class="ddt-figma__score-top">
+            <span class="ddt-figma__badge ddt-figma__badge--{{ d.band_key }}" data-slot="disease.risk">{{ d.risk_label }}</span>
+            <p class="ddt-figma__score-line">
+              Your score is <strong data-slot="disease.score">{{ d.score }}</strong> out of 100
+            </p>
+          </div>
+          <div class="ddt-figma__calc">
+            <p class="ddt-figma__calc-label">Score is calculated based on :</p>
+            <div class="ddt-figma__calc-cols">
+              <div class="ddt-figma__calc-item">
+                <img src="{{ assets.ddt_bullet }}" alt="" width="6" height="6" />
+                <span>Lifestyle choices</span>
+              </div>
+              <div class="ddt-figma__calc-item">
+                <img src="{{ assets.ddt_bullet }}" alt="" width="6" height="6" />
+                <span>Blood markers</span>
+              </div>
+              <div class="ddt-figma__calc-item">
+                <img src="{{ assets.ddt_bullet }}" alt="" width="6" height="6" />
+                <span>Questionnaire responses</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ddt-figma__block">
+      <h2 class="ddt-figma__section-title">Lifestyle Contribution</h2>
+      <div class="ddt-figma__life" data-slot="disease.lifestyle_contribution">
+        <div class="ddt-figma__life-track">
+          {# Figma 451:4697 track + 451:4698 fill (opacity 0.8). Use PNG for PDF —
+             Chromium print often paints SVG/CSS gradients as green-only. #}
+          <img
+            class="ddt-figma__life-track-img"
+            src="{{ assets.ddt_life_track }}"
+            alt=""
+            width="496"
+            height="12"
+            aria-hidden="true"
+          />
+          <img
+            class="ddt-figma__life-bar"
+            src="{{ assets.ddt_life_bar }}"
+            alt=""
+            width="495"
+            height="12"
+            aria-hidden="true"
+          />
+          {% if d.lifestyle_marker_pct is not none %}
+          <div class="ddt-figma__life-marker" style="left:{{ d.lifestyle_marker_pct }}%;">
+            <span class="ddt-figma__life-check">✓</span>
+          </div>
+          {% endif %}
+        </div>
+        <div class="ddt-figma__life-ticks" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="ddt-figma__life-labels">
+          {% for level in vm.lifestyle_levels %}
+          <span>{{ level }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="ddt-figma__block">
+      <h2 class="ddt-figma__section-title">Your Health Rank V/S Others</h2>
+      <div class="ddt-figma__rank" data-slot="disease.percentile">
+        <div class="ddt-figma__rank-track">
+          {# Full lifestyle gradient underneath; remainder masks past the percentile. #}
+          <img
+            class="ddt-figma__rank-track-img"
+            src="{{ assets.ddt_life_track }}"
+            alt=""
+            width="496"
+            height="12"
+            aria-hidden="true"
+          />
+          <img
+            class="ddt-figma__rank-bar"
+            src="{{ assets.ddt_life_bar }}"
+            alt=""
+            width="495"
+            height="12"
+            aria-hidden="true"
+          />
+          <div
+            class="ddt-figma__rank-remainder"
+            style="left:{{ d.percentile_pct }}%;"
+            aria-hidden="true"
+          ></div>
+          <div class="ddt-figma__rank-marker" style="left:{{ d.percentile_pct }}%;">
+            <span>{{ d.percentile_label }}</span>
+          </div>
+        </div>
+        <div class="ddt-figma__rank-scale" aria-hidden="true">
+          <span class="ddt-figma__rank-tick ddt-figma__rank-tick--start" style="left:0%"></span>
+          <span class="ddt-figma__rank-tick" style="left:20%"></span>
+          <span class="ddt-figma__rank-tick" style="left:50%"></span>
+          <span class="ddt-figma__rank-tick ddt-figma__rank-tick--end" style="left:100%"></span>
+        </div>
+        <div class="ddt-figma__rank-labels">
+          <span class="ddt-figma__rank-label ddt-figma__rank-label--start" style="left:0%">0th</span>
+          <span class="ddt-figma__rank-label" style="left:20%">20th</span>
+          <span class="ddt-figma__rank-label" style="left:50%">50th</span>
+          <span class="ddt-figma__rank-label ddt-figma__rank-label--end" style="left:100%">100th</span>
+          <span class="ddt-figma__rank-note">Riskier than others</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ddt-figma__card ddt-figma__card--factors">
+      <h2 class="ddt-figma__section-title">What could be affecting your results ?</h2>
+      <div class="ddt-figma__factors" data-slot="disease.contributing_factors">
+        {% if d.factor_chips %}
+          {% for chip in d.factor_chips %}
+          <div class="ddt-figma__factor">
+            {% if chip.icon_key %}
+            <img src="{{ assets[chip.icon_key] }}" alt="" width="24" height="24" />
+            {% endif %}
+            <span>{{ chip.label }}</span>
+          </div>
+          {% endfor %}
+        {% else %}
+          <p class="ddt-figma__factors-empty">No contributing factors provided for this assessment.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="ddt-figma__legend" aria-hidden="true">
+    <div class="ddt-figma__legend-item">
+      <img src="{{ assets.ddt_legend_healthy }}" alt="" width="12" height="12" />
+      <span>Healthy</span>
+    </div>
+    <div class="ddt-figma__legend-item">
+      <img src="{{ assets.ddt_legend_increased }}" alt="" width="12" height="12" />
+      <span>Increased Risk</span>
+    </div>
+    <div class="ddt-figma__legend-item">
+      <img src="{{ assets.ddt_legend_high }}" alt="" width="12" height="12" />
+      <span>High Risk</span>
+    </div>
+    <div class="ddt-figma__legend-item">
+      <img src="{{ assets.ddt_legend_very_high }}" alt="" width="12" height="12" />
+      <span>Very High Risk</span>
+    </div>
+  </div>
+
+  <div class="ddt-figma__footer">
+    <div class="ddt-figma__footer-inner">
+      <div class="ddt-figma__powered">
+        <span>Poweredby</span>
+        <img src="{{ assets.ddt_metflux }}" alt="MetFlux Research" />
+      </div>
+      <p class="ddt-figma__page-no">{{ d.page_no }}</p>
+      <div class="ddt-figma__footer-right">
+        <img class="ddt-figma__mark" src="{{ assets.ddt_mark }}" alt="Metsights" />
+      </div>
+    </div>
+  </div>
+</section>

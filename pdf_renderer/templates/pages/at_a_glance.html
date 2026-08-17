@@ -1,0 +1,107 @@
+{# At A Glance — male 379:120319 / female 451:2 #}
+<section
+  class="page aag-figma{% if vm.variant == 'female' %} aag-figma--female{% endif %}"
+  data-template="AtAGlance"
+  data-page="6"
+  data-node-id="{% if vm.variant == 'female' %}451:2{% else %}379:120319{% endif %}"
+  data-variant="{{ vm.variant }}"
+>
+  {# Scene = body + circuit bg only; cards/connectors/chrome are HTML overlays. #}
+  <img class="aag-figma__scene" src="{{ assets.aag_scene }}" alt="" aria-hidden="true" />
+
+  <h1 class="aag-figma__title">At A Glance</h1>
+  <img class="aag-figma__title-line" src="{{ assets.aag_title_line }}" alt="" aria-hidden="true" />
+  <p class="aag-figma__subtitle">Below is your overall metabolic risk score</p>
+
+  <svg class="aag-figma__connectors" viewBox="0 0 595 842" width="595" height="842" aria-hidden="true">
+    {% for card in aag.cards %}
+    {% if card.connector_d %}
+    <g class="aag-figma__connector" data-disease-id="{{ card.disease_id }}">
+      <path
+        d="{{ card.connector_d }}"
+        fill="none"
+        stroke="{{ card.accent }}"
+        stroke-width="1"
+        stroke-linecap="butt"
+        stroke-linejoin="miter"
+      />
+      {% if card.dot_x is not none %}
+      <circle
+        cx="{{ card.dot_x }}"
+        cy="{{ card.dot_y }}"
+        r="7.65"
+        fill="none"
+        stroke="{{ card.accent }}"
+        stroke-width="1"
+      />
+      <circle
+        cx="{{ card.dot_x }}"
+        cy="{{ card.dot_y }}"
+        r="4.89"
+        fill="none"
+        stroke="{{ card.accent }}"
+        stroke-width="1"
+      />
+      {% endif %}
+    </g>
+    {% endif %}
+    {% endfor %}
+  </svg>
+
+  <div class="aag-figma__cards" data-slot="glance.disease_grid">
+    {% for card in aag.cards %}
+    <article
+      class="aag-figma__card aag-figma__card--{{ card.side }}{% if card.tall %} aag-figma__card--tall{% endif %}"
+      style="top:{{ card.top }}px; --aag-accent:{{ card.accent }}; border-color:{{ card.accent }};"
+      data-disease-id="{{ card.disease_id }}"
+    >
+      <span class="aag-figma__accent" style="background:{{ card.accent }};" aria-hidden="true"></span>
+      <img
+        class="aag-figma__icon"
+        src="{{ assets['aag_icon_' ~ card.disease_id] }}"
+        alt=""
+        width="22"
+        height="22"
+      />
+      <div class="aag-figma__copy">
+        <p class="aag-figma__name">{{ card.title }}</p>
+        <p class="aag-figma__score-row">
+          <span class="aag-figma__score" data-slot="glance.score">{{ card.score_display }}</span>
+          <span
+            class="aag-figma__pill{% if card.risk == 'Healthy' %} aag-figma__pill--healthy{% endif %}"
+            style="background:{{ card.accent }};"
+          >{{ card.risk }}</span>
+        </p>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <div class="aag-figma__legend" aria-hidden="true">
+    <div class="aag-figma__legend-item">
+      <img src="{{ assets.aag_legend_healthy }}" alt="" width="12" height="12" />
+      <span><em>Healthy</em><small>(0-25)</small></span>
+    </div>
+    <div class="aag-figma__legend-item">
+      <img src="{{ assets.aag_legend_increased }}" alt="" width="12" height="12" />
+      <span><em>Increased Risk</em><small>(26-50)</small></span>
+    </div>
+    <div class="aag-figma__legend-item">
+      <img src="{{ assets.aag_legend_high }}" alt="" width="12" height="12" />
+      <span><em>High Risk</em><small>(51-75)</small></span>
+    </div>
+    <div class="aag-figma__legend-item">
+      <img src="{{ assets.aag_legend_very_high }}" alt="" width="12" height="12" />
+      <span><em>Very High Risk</em><small>(76-100)</small></span>
+    </div>
+  </div>
+
+  <div class="aag-figma__footer">
+    <div class="aag-figma__powered">
+      <span>Poweredby</span>
+      <img src="{{ assets.aag_metflux }}" alt="MetFlux Research" />
+    </div>
+    <p class="aag-figma__page-no">06</p>
+    <img class="aag-figma__mark" src="{{ assets.aag_mark }}" alt="Metsights" />
+  </div>
+</section>

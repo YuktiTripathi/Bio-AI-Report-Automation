@@ -1,0 +1,94 @@
+{# Your Health Summary — Figma 367:1012 (thumbs down) / 315:1166 (thumbs up) #}
+<section class="page hs-figma" data-template="YourHealthSummary" data-page="5" data-node-id="367:1012">
+  <img class="hs-figma__bg" src="{{ assets.hs_bg }}" alt="" aria-hidden="true" />
+  <img class="hs-figma__rings" src="{{ assets.hs_rings }}" alt="" aria-hidden="true" />
+
+  <h1 class="hs-figma__title">Your Health Summary</h1>
+  <img class="hs-figma__title-line" src="{{ assets.hs_title_line }}" alt="" aria-hidden="true" />
+  <p class="hs-figma__subtitle">Below is your overall metabolic risk score</p>
+
+  <div class="hs-figma__score-card">
+    <img class="hs-figma__score-card-bg" src="{{ assets.hs_score_card }}" alt="" aria-hidden="true" />
+
+    <div class="hs-figma__metric hs-figma__metric--age">
+      <p class="hs-figma__metric-label">Metabolic Age</p>
+      <p class="hs-figma__metric-value">
+        <span class="hs-figma__metric-num" data-slot="summary.metabolic_age" style="color:{{ hs.age_color }}">{{ hs.age_display }}</span>
+        <span class="hs-figma__metric-unit">years</span>
+      </p>
+    </div>
+
+    {# Figma 378:109722 — rings clipped to card portal; thumb sits above and may overflow #}
+    <div class="hs-figma__gauge-clip" aria-hidden="true">
+      <img class="hs-figma__gauge" src="{{ assets.hs_gauge }}" alt="" />
+    </div>
+
+    <div
+      class="hs-figma__thumb-wrap {% if hs.thumb_up %}hs-figma__thumb-wrap--up{% else %}hs-figma__thumb-wrap--down{% endif %}"
+      aria-hidden="true"
+    >
+      <img
+        class="hs-figma__thumb {% if hs.thumb_up %}hs-figma__thumb--up{% else %}hs-figma__thumb--down{% endif %}"
+        src="{{ hs.thumb_src }}"
+        {% if hs.thumb_up %}width="199" height="156"{% else %}width="151" height="155"{% endif %}
+        alt=""
+      />
+    </div>
+
+    <div class="hs-figma__metric hs-figma__metric--score">
+      <p class="hs-figma__metric-label">Metabolic Risk Score</p>
+      <p class="hs-figma__metric-value">
+        <span class="hs-figma__metric-num" data-slot="summary.metabolic_score" style="color:{{ hs.score_color }}">{{ hs.score_display }}</span>
+        <span class="hs-figma__metric-unit">/100</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="hs-figma__meaning">
+    <p class="hs-figma__section-title">What does it mean?</p>
+    <ul class="hs-figma__bullets">
+      <li>Overall metabolic risk is a measure that is used to assess a person's risk of developing disorders related to metabolism malfunctions.</li>
+      <li>Metabolic age is a measure of your body's metabolic rate compared to others of the same chronological age, indicating how efficiently your body burns calories at rest.</li>
+    </ul>
+  </div>
+
+  <div class="hs-figma__summary-box">
+    <p class="hs-figma__section-title hs-figma__section-title--center">A summary of your result is given in form of Overall Metabolic Risk</p>
+    <p class="hs-figma__calc-label">Calculated based on :</p>
+    <div class="hs-figma__factors">
+      <span>Blood Metabolites</span>
+      <span>Physical Activity</span>
+      <span>Dietary Habits</span>
+      <span>Lifestyle choices</span>
+      <span>Medical History</span>
+    </div>
+  </div>
+
+  <div class="hs-figma__legend">
+    <div class="hs-figma__legend-item">
+      <img src="{{ assets.hs_legend_healthy }}" alt="" width="12" height="12" />
+      <span>Healthy</span>
+    </div>
+    <div class="hs-figma__legend-item">
+      <img src="{{ assets.hs_legend_increased }}" alt="" width="12" height="12" />
+      <span>Increased Risk</span>
+    </div>
+    <div class="hs-figma__legend-item">
+      <img src="{{ assets.hs_legend_high }}" alt="" width="12" height="12" />
+      <span>High Risk</span>
+    </div>
+    <div class="hs-figma__legend-item">
+      <img src="{{ assets.hs_legend_very_high }}" alt="" width="12" height="12" />
+      <span>Very High Risk</span>
+    </div>
+  </div>
+
+  <div class="hs-figma__footer">
+    <div class="hs-figma__powered">
+      <span>Poweredby</span>
+      <img src="{{ assets.hs_metflux }}" alt="MetFlux Research" />
+    </div>
+    <p class="hs-figma__page-no">05</p>
+    <img class="hs-figma__mark" src="{{ assets.hs_mark }}" alt="Metsights" />
+  </div>
+</section>

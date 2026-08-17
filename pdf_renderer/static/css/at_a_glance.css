@@ -1,0 +1,284 @@
+/* At A Glance — Figma node 379:120319 (595×842) */
+
+.page.aag-figma,
+.aag-figma {
+  width: 595px;
+  height: 842px;
+  padding: 0;
+  margin: 0 auto;
+  background: #002826;
+  color: #ffffff;
+  overflow: hidden;
+  position: relative;
+  page-break-after: always;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+}
+
+.aag-figma__scene {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 595px;
+  height: 842px;
+  display: block;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.aag-figma__connectors {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 595px;
+  height: 842px;
+  z-index: 2;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.aag-figma__title {
+  position: absolute;
+  left: 39px;
+  top: 45px;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 400;
+  color: #ffffff;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.aag-figma__title-line {
+  position: absolute;
+  left: 175px;
+  top: 58px;
+  width: 386px;
+  height: 1px;
+  display: block;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.aag-figma__subtitle {
+  position: absolute;
+  left: 39px;
+  top: 77px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: #ffffff;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.aag-figma__cards {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.aag-figma__card {
+  position: absolute;
+  /* Figma card shell ≈ 156.4 × 58.4 */
+  width: 156px;
+  height: 58px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  background: #063533;
+  border: 1px solid var(--aag-accent);
+  box-shadow: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 8px 10px 8px 10px;
+  overflow: hidden;
+  z-index: 3;
+}
+
+.aag-figma__card--left {
+  left: 42px;
+}
+
+.aag-figma__card--right {
+  left: 397px;
+}
+
+.aag-figma__card--tall {
+  height: 67px;
+  padding-top: 8px;
+}
+
+.aag-figma__accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  border-radius: 6px 0 0 6px;
+  background: #f8d232;
+}
+
+.aag-figma__icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  margin-top: 2px;
+  object-fit: contain;
+  display: block;
+}
+
+.aag-figma__copy {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.aag-figma__name {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: #ffffff;
+  white-space: pre-line;
+}
+
+.aag-figma__score-row {
+  margin: 0;
+  display: grid;
+  /* Score left | fixed pill column right — same slot for every risk band */
+  grid-template-columns: minmax(0, 1fr) 64px;
+  align-items: center;
+  column-gap: 4px;
+  min-height: 16px;
+  width: 100%;
+}
+
+.aag-figma__score {
+  font-size: 12px;
+  font-weight: 400;
+  color: #ffffff;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.aag-figma__pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 64px;
+  min-height: 15px;
+  padding: 2px 4px;
+  border-radius: 24px;
+  font-size: 6.4px;
+  font-weight: 500;
+  color: #000000;
+  white-space: nowrap;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  box-sizing: border-box;
+  justify-self: stretch;
+}
+
+/* Same geometry for Healthy / Increased / High / Very High */
+.aag-figma__pill--healthy {
+  font-size: 6.4px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  padding: 2px 4px;
+}
+
+.aag-figma__legend {
+  position: absolute;
+  left: 50%;
+  top: 748px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.aag-figma__legend-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  font-size: 8.6px;
+  color: #ffffff;
+}
+
+.aag-figma__legend-item img {
+  width: 12px;
+  height: 12px;
+  display: block;
+  flex: 0 0 12px;
+  margin-top: 1px;
+}
+
+.aag-figma__legend-item span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.1;
+}
+
+.aag-figma__legend-item em {
+  font-style: normal;
+  font-weight: 400;
+}
+
+.aag-figma__legend-item small {
+  font-size: 8.6px;
+  opacity: 0.95;
+}
+
+.aag-figma__footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 52px;
+  z-index: 3;
+}
+
+.aag-figma__powered {
+  position: absolute;
+  left: 32px;
+  top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #ffffff;
+}
+
+.aag-figma__powered img {
+  height: 14px;
+  width: auto;
+  display: block;
+}
+
+.aag-figma__page-no {
+  position: absolute;
+  left: 50%;
+  top: 18px;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 12px;
+  color: #ffffff;
+}
+
+.aag-figma__mark {
+  position: absolute;
+  right: 32px;
+  top: 14px;
+  width: 20px;
+  height: 20px;
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+}

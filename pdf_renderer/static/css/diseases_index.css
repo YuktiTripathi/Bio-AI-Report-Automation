@@ -1,0 +1,243 @@
+/* Lifestyle Diseases Covered — Figma node 451:5615 (595×842) */
+
+.page.ldi-figma,
+.ldi-figma {
+  width: 595px;
+  height: 842px;
+  padding: 0;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #000000;
+  overflow: hidden;
+  position: relative;
+  page-break-after: always;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Figma background blob (node 451:5616) — teal→red wash at 10% opacity */
+.ldi-figma__deco {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 595px;
+  height: 842px;
+  display: block;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ldi-figma__title {
+  position: absolute;
+  left: 37px;
+  top: 39px;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 400;
+  color: #cb203b;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.ldi-figma__title-line {
+  position: absolute;
+  left: 329px;
+  top: 53px;
+  width: 228px;
+  height: 1px;
+  z-index: 2;
+}
+
+.ldi-figma__timeline {
+  position: absolute;
+  left: 50%;
+  top: 111px;
+  transform: translateX(-50%);
+  width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  z-index: 2;
+}
+
+.ldi-figma__row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr;
+  align-items: center;
+  height: 64px; /* 40px badge + 24px Figma gap */
+  z-index: 1;
+}
+
+.ldi-figma__badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 24px;
+  background: #cc203b;
+  color: #ffffff;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.ldi-figma__side {
+  display: flex;
+  align-items: flex-start;
+  height: 64px;
+  /* Center 56px icon with 40px badge in the 64px row */
+  padding-top: 4px;
+}
+
+.ldi-figma__side--left {
+  justify-content: flex-end;
+  padding-right: 0;
+}
+
+.ldi-figma__side--right {
+  justify-content: flex-start;
+  padding-left: 0;
+}
+
+.ldi-figma__row--left .ldi-figma__side--left,
+.ldi-figma__row--right .ldi-figma__side--right {
+  gap: 0;
+}
+
+.ldi-figma__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  /* Fixed column so left icons share one vertical axis (labels may overflow) */
+  width: 92px;
+  flex: 0 0 92px;
+  overflow: visible;
+}
+
+.ldi-figma__icon {
+  width: 56px;
+  height: 56px;
+  display: block;
+  object-fit: contain;
+  flex: 0 0 56px;
+  background: transparent;
+}
+
+.ldi-figma__label {
+  margin: 0;
+  font-family: "DM Serif Display", "Times New Roman", Times, serif;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 14px;
+  text-align: center;
+  /* Solid color — background-clip:text is unreliable in Chromium PDF */
+  color: #063533;
+  -webkit-text-fill-color: #063533;
+  /* Long labels (e.g. NAFLD) center under the icon without shifting the column */
+  width: max-content;
+  max-width: 151px;
+  box-sizing: border-box;
+}
+
+.ldi-figma__connector {
+  /* Figma connector SVG: 100×1 stroke #063533 dasharray 5 5 (viewBox padded to 2px) */
+  width: 100px;
+  height: 2px;
+  display: block;
+  flex: 0 0 100px;
+  max-width: none;
+  object-fit: fill;
+  /* Vertically center on the 56px icon (Figma aligns dash through icon mid) */
+  margin-top: 27px;
+}
+
+.ldi-figma__row--left .ldi-figma__side--left {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.ldi-figma__row--right .ldi-figma__side--right {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.ldi-figma__footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  z-index: 3;
+  background: #e5f3f6;
+}
+
+.ldi-figma__footer-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.ldi-figma__footer-rule {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 595px;
+  height: 1px;
+}
+
+.ldi-figma__powered {
+  position: absolute;
+  left: 32px;
+  top: 17px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: 400;
+  color: #000000;
+  z-index: 1;
+}
+
+.ldi-figma__powered img {
+  height: 14px;
+  width: auto;
+  display: block;
+}
+
+.ldi-figma__page-no {
+  position: absolute;
+  left: 50%;
+  top: 17px;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 12px;
+  font-weight: 400;
+  color: #000000;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.ldi-figma__mark {
+  position: absolute;
+  right: 32px;
+  top: 15px;
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+  z-index: 1;
+}
+
+body.preview-mode .ldi-figma {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}

@@ -1,0 +1,68 @@
+# JSON path → PDF slot contract. Renderer must bind by disease_id, never by array index.
+
+rules:
+  - never_map_by_page_index_alone: true
+  - never_reslice_content_arrays: true
+  - patient_source: patient  # not executive_summary.patient
+  - missing_disease: omit_page
+  - null_demographics: em_dash
+
+cover:
+  cover.name: patient.name
+  cover.age: patient.age
+  cover.gender: patient.gender|patient.sex
+  cover.assessment_date: patient.assessment_date
+
+welcome:
+  welcome.honorific: derived.from_gender  # Mr. / Ms.
+  welcome.name: patient.name
+
+toc:
+  toc.disease_page_range: derived.variant_disease_page_range
+
+summary:
+  summary.metabolic_score: patient.metabolic_score
+  summary.metabolic_age: patient.metabolic_age
+  summary.overall_status: patient.metabolic_health_status
+  summary.bmi: patient.bmi
+  summary.height: patient.height
+  summary.weight: patient.weight
+  summary.name: patient.name
+
+glance:
+  glance.disease_grid[].disease_id: disease_sections[id].disease_id
+  glance.disease_grid[].title: disease_sections[id].title
+  glance.disease_grid[].score: disease_sections[id].current_status.score
+  glance.disease_grid[].risk: disease_sections[id].current_status.risk
+
+risks_page:
+  risks.top_cards[].disease_id: executive_summary.top_disease_risks[].disease_id
+  risks.top_cards[].title: executive_summary.top_disease_risks[].title
+  risks.top_cards[].risk: executive_summary.top_disease_risks[].risk
+  risks.top_cards[].score: executive_summary.top_disease_risks[].score
+  risks.top_cards[].percentile: executive_summary.top_disease_risks[].percentile
+  risks.top_cards[].insights: executive_summary.top_disease_risks[].insights
+
+disease_detail:
+  disease.title: disease_sections[id].title
+  disease.overview: disease_sections[id].overview
+  disease.score: disease_sections[id].current_status.score
+  disease.risk: disease_sections[id].current_status.risk
+  disease.percentile: disease_sections[id].current_status.percentile
+  disease.lifestyle_contribution: disease_sections[id].current_status.lifestyle_contribution
+  disease.contributing_factors: disease_sections[id].contributing_factors
+  disease.score_badge: disease_sections[id].current_status.score
+
+gauge_bindings:
+  score_ring: current_status.score
+  risk_color: current_status.risk
+  percentile_marker: current_status.percentile
+  lifestyle_meter: current_status.lifestyle_contribution
+
+validation_gate:
+  - rendered_disease_score_equals_json
+  - rendered_disease_title_equals_json
+  - rendered_disease_risk_equals_json
+  - disease_count_matches_rendered_pages
+  - gender_variant_matches_patient
+  - no_cross_disease_tip_leakage

@@ -1,0 +1,254 @@
+/* Cover page — Figma node 451:6916 (595×842 A4 pt) */
+
+.cover-figma {
+  width: 595px;
+  height: 842px;
+  padding: 0;
+  margin: 0 auto;
+  background: #061c1a;
+  color: #ffffff;
+  overflow: hidden;
+  position: relative;
+  page-break-after: always;
+}
+
+.cover-figma__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cover-figma__bg-img {
+  /* Same Figma "green bg 2" crop as Welcome 451:8312 */
+  position: absolute;
+  height: 100%;
+  left: -1.86%;
+  top: 0.01%;
+  width: 174.17%;
+  max-width: none;
+  object-fit: cover;
+}
+
+.cover-figma__center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 233px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  z-index: 2;
+}
+
+.cover-figma__logo {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.cover-figma__logo-layer {
+  position: absolute;
+  display: block;
+  max-width: none;
+}
+
+.cover-figma__logo-layer--2 {
+  inset: 0.69% 0.61%;
+  width: 98.78%;
+  height: 98.62%;
+}
+
+.cover-figma__logo-layer--4 {
+  inset: 0.69% 0.62% 0.69% 0.61%;
+  width: 98.77%;
+  height: 98.62%;
+}
+
+.cover-figma__logo-layer--5 {
+  inset: 4.51% 2.19%;
+  width: 95.62%;
+  height: 90.98%;
+}
+
+.cover-figma__logo-layer--3 {
+  inset: 37.48% 14.92% 34.56% 14.92%;
+  width: 70.16%;
+  height: 27.96%;
+}
+
+.cover-figma__meta {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.cover-figma__name-block {
+  width: 135px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.cover-figma__label {
+  margin: 0;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: normal;
+  color: #ffffff;
+  text-align: center;
+  width: 100%;
+}
+
+.cover-figma__value {
+  margin: 0;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: normal;
+  color: #ffffff;
+  /* text-shadow paints a light rectangular box in Chromium PDF */
+  text-align: center;
+}
+
+.cover-figma__value--name {
+  white-space: nowrap;
+}
+
+.cover-figma__age-gender {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cover-figma__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-figma__field--age {
+  width: 67px;
+}
+
+.cover-figma__field--age .cover-figma__value {
+  width: 79px;
+}
+
+.cover-figma__field--gender {
+  width: 56px;
+  align-items: flex-start;
+}
+
+.cover-figma__field--gender .cover-figma__label,
+.cover-figma__field--gender .cover-figma__value {
+  width: 100%;
+}
+
+.cover-figma__divider {
+  width: 1px;
+  height: 44px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.cover-figma__assessment {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  color: #ffffff;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: normal;
+  white-space: pre-wrap;
+}
+
+.cover-figma__assessment-date {
+  font-weight: 700;
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+.cover-figma__footer {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 4.9%;
+  width: max-content;
+  max-width: 90%;
+  text-align: center;
+  z-index: 2;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: normal;
+  color: #ffffff;
+}
+
+.cover-figma__footer p {
+  margin: 0;
+}
+
+.cover-figma__footer p + p {
+  margin-top: 4px;
+}
+
+/* Preview chrome: show A4 page centered on dark desk */
+body.preview-mode {
+  background: #2b2b2b;
+  min-height: 100vh;
+}
+
+body.preview-mode .preview-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  background: #111;
+  color: #fff;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+}
+
+body.preview-mode .preview-toolbar a,
+body.preview-mode .preview-toolbar button {
+  color: #fff;
+  background: #0b6e4f;
+  border: 0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+body.preview-mode .preview-stage {
+  display: flex;
+  justify-content: center;
+  padding: 24px 12px 40px;
+}
+
+body.preview-mode .page:not(.cover-figma) {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+body.preview-mode .cover-figma {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+}

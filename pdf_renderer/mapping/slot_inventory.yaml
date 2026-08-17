@@ -1,0 +1,144 @@
+# Locked page/slot inventory derived from BIO-AI-report-M.pdf / BIO-AI-report-F.pdf.
+# Figma URL: pending — sample PDFs are the layout source of truth until Figma is linked.
+# Every dynamic layer must keep the slot_id below when frames are named in Figma.
+
+document:
+  page_size: A4
+  width_pt: 595
+  height_pt: 842
+  sources:
+    male_sample: BIO-AI-report-M.pdf
+    female_sample: BIO-AI-report-F.pdf
+
+variants:
+  male:
+    page_count: 18
+    disease_page_range: "9-17"
+    honorific: Mr.
+  female:
+    page_count: 17
+    disease_page_range: "9-16"
+    honorific: Ms.
+
+frames:
+  - template_id: CoverPage
+    male_page: 1
+    female_page: 1
+    slots:
+      - slot_id: cover.name
+      - slot_id: cover.age
+      - slot_id: cover.gender
+      - slot_id: cover.assessment_date
+
+  - template_id: WelcomeLetter
+    male_page: 2
+    female_page: 2
+    slots:
+      - slot_id: welcome.honorific
+      - slot_id: welcome.name
+
+  - template_id: TableOfContents
+    male_page: 3
+    female_page: 3
+    slots:
+      - slot_id: toc.disease_page_range
+
+  - template_id: LifestyleDiseasesIndex
+    male_page: 4
+    female_page: 4
+    slots:
+      - slot_id: index.disease_tiles  # ordered by variant disease_order
+
+  - template_id: YourHealthSummary
+    male_page: 5
+    female_page: 5
+    slots:
+      - slot_id: summary.metabolic_score
+      - slot_id: summary.metabolic_age
+      - slot_id: summary.overall_status
+      - slot_id: summary.bmi
+      - slot_id: summary.height
+      - slot_id: summary.weight
+      - slot_id: summary.name
+
+  - template_id: AtAGlance
+    male_page: 6
+    female_page: 6
+    slots:
+      - slot_id: glance.disease_grid  # title/score/risk per disease_id
+
+  - template_id: RiskSummaryInsights
+    male_page: 7
+    female_page: 7
+    slots:
+      - slot_id: risks.top_cards  # max 3; each has title/risk/percentile/insights[]
+
+  - template_id: DiseaseSectionDivider
+    male_page: 8
+    female_page: 8
+    slots: []
+
+  - template_id: DiseaseDetail
+    male_pages: "9-17"
+    female_pages: "9-16"
+    repeat_by: disease_id
+    slots:
+      - slot_id: disease.title
+      - slot_id: disease.overview
+      - slot_id: disease.score
+      - slot_id: disease.risk
+      - slot_id: disease.percentile
+      - slot_id: disease.lifestyle_contribution
+      - slot_id: disease.contributing_factors
+      - slot_id: disease.score_badge
+
+  - template_id: BackCover
+    male_page: 18
+    female_page: 19
+    slots: []
+
+disease_order:
+  male:
+    - metabolic_syndrome
+    - dyslipidemia
+    - cardiac_health
+    - oxidative_stress
+    - nafld
+    - hypertension
+    - obesity
+    - thyroid_health
+    - type2_diabetes
+  female:
+    - metabolic_syndrome
+    - dyslipidemia
+    - cardiac_health
+    - oxidative_stress
+    - nafld
+    - hypertension
+    - obesity
+    - thyroid_health
+    - type2_diabetes
+    - pcos_pcod
+
+index_order:
+  male:
+    - nafld
+    - metabolic_syndrome
+    - cardiac_health
+    - obesity
+    - oxidative_stress
+    - thyroid_health
+    - dyslipidemia
+    - hypertension
+    - type2_diabetes
+  female:
+    - metabolic_syndrome
+    - dyslipidemia
+    - cardiac_health
+    - oxidative_stress
+    - nafld
+    - hypertension
+    - obesity
+    - thyroid_health
+    - type2_diabetes
+    - pcos_pcod

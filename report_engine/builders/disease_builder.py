@@ -96,6 +96,10 @@ def build_disease_section(
 
     title = (disease.name or "").strip() or kb.display_name
     risk = _resolve_risk_label(score=score, assessment_risk=disease.risk_status)
+    contributing_factors = limit_items(
+        list(disease.contributing_factors or []),
+        config.TOP_CONTRIBUTING_FACTORS,
+    )
 
     return DiseaseSection(
         disease_id=disease_id,
@@ -130,6 +134,7 @@ def build_disease_section(
             ),
         ),
         positive_takeaway=score_band.positive_takeaway,
+        contributing_factors=contributing_factors,
     )
 
 

@@ -21,6 +21,7 @@ class AssessmentDisease(BaseModel):
     disease_percentile: float | int | None = None
     risk_status_message: str | None = None
     lifestyle_contribution_message: str | None = None
+    contributing_factors: list[str] = Field(default_factory=list)
 
 
 class AssessmentPayload(BaseModel):

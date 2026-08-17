@@ -1,0 +1,63 @@
+{# Risk Summary & Actionable Insights — Figma node 379:119787 #}
+<section class="page rs-figma" data-template="RiskSummaryInsights" data-page="7" data-node-id="379:119787">
+  <h1 class="rs-figma__title">Risk Summary &amp; Actionable Insights</h1>
+  <img class="rs-figma__title-line" src="{{ assets.rs_title_line }}" alt="" aria-hidden="true" />
+
+  <div class="rs-figma__body">
+    <div class="rs-figma__cards" data-slot="risks.top_cards">
+      {% for card in rs.cards %}
+      <article class="rs-figma__card" data-disease-id="{{ card.disease_id }}">
+        <div class="rs-figma__head">
+          <div class="rs-figma__icon-wrap rs-figma__icon-wrap--{{ card.band_key }}" aria-hidden="true">
+            <img class="rs-figma__icon" src="{{ assets['rs_icon_' ~ card.disease_id] }}" alt="" width="28" height="28" />
+          </div>
+          <div class="rs-figma__meta">
+            <p class="rs-figma__name">{{ card.title }}</p>
+            <p class="rs-figma__risk-line">{{ card.risk_line }}</p>
+            <div class="rs-figma__bar" aria-hidden="true">
+              {# Same lifestyle gradient PNG as disease detail — CSS gradients flatten in Chromium PDF. #}
+              <img
+                class="rs-figma__bar-grad"
+                src="{{ assets.ddt_life_bar }}"
+                alt=""
+                width="495"
+                height="12"
+              />
+              <div
+                class="rs-figma__bar-remainder"
+                style="left:{{ card.bar_pct }}%;"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <p class="rs-figma__insights-title">Actionable Insights / Diet &amp; Lifestyle Tips</p>
+        <div class="rs-figma__tips">
+          {% for tip in card.insights[:3] %}
+          <span class="rs-figma__tip">{{ tip }}</span>
+          {% endfor %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="rs-figma__disclaimer">
+      <p>
+        Please Note: MetSights shall not be responsible for any deficiency/inaccuracy in this report arising out of or in relation to any errors or deficiencies in the data provided for the same. This is a system generated report based on algorithms and shall not be treated as the opinion of an expert in any domain and /or any medical or professional advice. This report is only meant to be a general indicator of health status of the end-user and the end-user should not disregard or delay to seek professional advice including medical advice on the basis of anything contained herein.
+      </p>
+    </div>
+  </div>
+
+  <div class="rs-figma__footer">
+    <div class="rs-figma__footer-inner">
+      <div class="rs-figma__powered">
+        <span>Poweredby</span>
+        <img src="{{ assets.rs_metflux }}" alt="MetFlux Research" />
+      </div>
+      <p class="rs-figma__page-no">07</p>
+      <div class="rs-figma__footer-right">
+        <img class="rs-figma__mark" src="{{ assets.rs_mark }}" alt="Metsights" />
+      </div>
+    </div>
+  </div>
+</section>
