@@ -16,6 +16,9 @@ _DISEASE_CODE_ALIASES: dict[str, str] = {
     "dyslipidemia": "dyslipidemia",
     "cardiac_health": "cardiac_health",
     "metabolic_syndrome": "metabolic_syndrome",
+    "pcos": "pcos",
+    "polycystic_ovary_syndrome": "pcos",
+    "polycystic_ovarian_syndrome": "pcos",
 }
 
 

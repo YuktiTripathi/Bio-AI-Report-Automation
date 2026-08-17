@@ -160,7 +160,7 @@
     {
       "disease_id": "obesity",
       "title": "Obesity",
-      "overview": "",
+      "overview": "Obesity is a chronic condition characterized by excessive body fat accumulation that can affect overall health. It may result from genetic, lifestyle, environmental, and metabolic factors, and can increase the risk of conditions such as diabetes, heart disease, and hypertension.",
       "current_status": {
         "score": 61,
         "risk": "High",
@@ -538,7 +538,7 @@
     {
       "disease_id": "hypertension",
       "title": "Hypertension",
-      "overview": "",
+      "overview": "Hypertension is a condition in which blood pressure remains consistently higher than normal, placing increased strain on the heart and blood vessels. Uncontrolled hypertension can cause organ damage over time and increase the risk of heart disease, stroke, and kidney issues.",
       "current_status": {
         "score": 17,
         "risk": "Healthy",
@@ -667,7 +667,7 @@
     "engine_version": "1.0.0",
     "kb_version": "1.0",
     "template_version": "1.0.0",
-    "generated_at": "2026-08-16T08:49:25Z",
+    "generated_at": "2026-08-17T11:59:50Z",
     "disease_count": 9,
     "source": "metsights"
   }

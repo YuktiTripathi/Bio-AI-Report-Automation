@@ -31,7 +31,7 @@ class RiskBandContent(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    range: str
+    range: str = ""
     score_bands: dict[str, ScoreBandContent] = Field(default_factory=dict)
 
 
@@ -56,7 +56,11 @@ class ResultFactorSets(BaseModel):
     set_5: ResultFactorSet
 
     def get(self, set_key: str) -> ResultFactorSet | None:
-        return getattr(self, set_key, None)
+        """Return a named set (set_1 … set_5), or None if the key is absent."""
+        if not set_key or not isinstance(set_key, str):
+            return None
+        value = getattr(self, set_key, None)
+        return value if isinstance(value, ResultFactorSet) else None
 
 
 class DiseaseKnowledgeBase(BaseModel):

@@ -2,7 +2,7 @@
   "knowledge_base_version": "1.0",
   "disease_id": "hypertension",
   "display_name": "Hypertension",
-  "overview": "",
+  "overview": "Hypertension is a condition in which blood pressure remains consistently higher than normal, placing increased strain on the heart and blood vessels. Uncontrolled hypertension can cause organ damage over time and increase the risk of heart disease, stroke, and kidney issues.",
   "risk_bands": {
     "healthy": {
       "range": "0-25",

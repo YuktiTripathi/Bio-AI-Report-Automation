@@ -2,7 +2,7 @@
   "knowledge_base_version": "1.0",
   "disease_id": "obesity",
   "display_name": "Obesity",
-  "overview": "",
+  "overview": "Obesity is a chronic condition characterized by excessive body fat accumulation that can affect overall health. It may result from genetic, lifestyle, environmental, and metabolic factors, and can increase the risk of conditions such as diabetes, heart disease, and hypertension.",
   "risk_bands": {
     "healthy": {
       "range": "0-25",
