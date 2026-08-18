@@ -34,11 +34,20 @@ def cover_asset_urls(variant: str = "male", *, for_http: bool = False) -> dict[s
 
 def welcome_asset_urls(variant: str = "male", *, for_http: bool = False) -> dict[str, str]:
     """Return welcome-page asset URLs for the given gender variant."""
-    folder = "male" if variant != "female" else "male"  # female welcome art TBD
+    folder = "female" if variant == "female" else "male"
     base_dir = Path(pdf_config.STATIC_DIR) / "assets" / "welcome" / folder
+    # Fall back to male shared chrome if a female file is missing.
+    male_dir = Path(pdf_config.STATIC_DIR) / "assets" / "welcome" / "male"
 
     def resolve(name: str) -> str:
-        return _resolve(base_dir, folder, name, for_http=for_http, kind="welcome")
+        path = base_dir / name
+        use_folder = folder
+        use_dir = base_dir
+        if not path.exists():
+            path = male_dir / name
+            use_folder = "male"
+            use_dir = male_dir
+        return _resolve(use_dir, use_folder, name, for_http=for_http, kind="welcome")
 
     return {
         "welcome_bg": resolve("bg.png"),
@@ -94,7 +103,9 @@ def diseases_index_asset_urls(*, for_http: bool = False) -> dict[str, str]:
         "pcos_pcod",
     )
     icons = {f"icon_{disease_id}": resolve(f"icon_{disease_id}.png") for disease_id in icon_ids}
-    return {
+    # Inline SVG for PCOS — <img src=".svg"> is rasterized at 56px in Chromium PDF
+    # and looks soft; inlined markup stays vector-sharp.
+    out: dict[str, str] = {
         "ldi_deco": resolve("deco_blob.svg"),
         "ldi_title_line": resolve("title_line.svg"),
         "ldi_connector": resolve("connector.svg"),
@@ -104,6 +115,14 @@ def diseases_index_asset_urls(*, for_http: bool = False) -> dict[str, str]:
         "ldi_mark": resolve("brand_mark.png"),
         **icons,
     }
+    pcos_svg = base_dir / "icon_pcos_pcod.svg"
+    if pcos_svg.exists():
+        markup = pcos_svg.read_text(encoding="utf-8")
+        markup = markup.replace('width="64"', 'width="56"', 1).replace(
+            'height="64"', 'height="56"', 1
+        )
+        out["icon_pcos_pcod_inline"] = markup
+    return out
 
 
 def health_summary_asset_urls(*, for_http: bool = False) -> dict[str, str]:

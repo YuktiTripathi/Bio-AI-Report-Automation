@@ -68,7 +68,7 @@
         <p class="aag-figma__score-row">
           <span class="aag-figma__score" data-slot="glance.score">{{ card.score_display }}</span>
           <span
-            class="aag-figma__pill{% if card.risk == 'Healthy' %} aag-figma__pill--healthy{% endif %}"
+            class="aag-figma__pill{% if card.risk == 'Healthy' %} aag-figma__pill--healthy{% elif card.risk == 'Very High Risk' %} aag-figma__pill--very-high{% endif %}"
             style="background:{{ card.accent }};"
           >{{ card.risk }}</span>
         </p>

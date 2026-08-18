@@ -52,6 +52,7 @@ INDEX_ORDER_MALE: tuple[str, ...] = (
     "type2_diabetes",
 )
 
+# Female index: same clinical order as male, with PCOS/PCOD at the end.
 INDEX_ORDER_FEMALE: tuple[str, ...] = (
     "metabolic_syndrome",
     "dyslipidemia",
@@ -76,6 +77,12 @@ DISEASE_DISPLAY_NAMES: dict[str, str] = {
     "hypertension": "Hypertension",
     "type2_diabetes": "Type 2 Diabetes",
     "pcos_pcod": "PCOS / PCOD",
+}
+
+# Upstream BioReport JSON sometimes uses short ids; map to catalog keys.
+DISEASE_ID_ALIASES: dict[str, str] = {
+    "pcos": "pcos_pcod",
+    "pcod": "pcos_pcod",
 }
 
 # Static lab catalogs from sample PDFs (gender variants).

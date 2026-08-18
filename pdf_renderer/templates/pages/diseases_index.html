@@ -1,4 +1,12 @@
 {# Lifestyle Diseases Covered — Figma node 451:5615 #}
+{% macro ldi_icon(disease_id) -%}
+  {%- set inline_key = 'icon_' ~ disease_id ~ '_inline' -%}
+  {%- if assets.get(inline_key) -%}
+  <span class="ldi-figma__icon ldi-figma__icon--svg" aria-hidden="true">{{ assets[inline_key] | safe }}</span>
+  {%- else -%}
+  <img class="ldi-figma__icon" src="{{ assets['icon_' ~ disease_id] }}" alt="" width="56" height="56" />
+  {%- endif -%}
+{%- endmacro %}
 <section class="page ldi-figma" data-template="LifestyleDiseasesIndex" data-page="4" data-node-id="451:5615">
   <img class="ldi-figma__deco" src="{{ assets.ldi_deco }}" alt="" aria-hidden="true" />
 
@@ -12,7 +20,7 @@
       <div class="ldi-figma__side ldi-figma__side--left">
         {% if side == 'left' %}
         <div class="ldi-figma__item">
-          <img class="ldi-figma__icon" src="{{ assets['icon_' ~ d.disease_id] }}" alt="" width="56" height="56" />
+          {{ ldi_icon(d.disease_id) }}
           <p class="ldi-figma__label">{{ d.title }}</p>
         </div>
         <img class="ldi-figma__connector" src="{{ assets.ldi_connector }}" alt="" width="100" height="2" aria-hidden="true" />
@@ -25,7 +33,7 @@
         {% if side == 'right' %}
         <img class="ldi-figma__connector" src="{{ assets.ldi_connector }}" alt="" width="100" height="2" aria-hidden="true" />
         <div class="ldi-figma__item">
-          <img class="ldi-figma__icon" src="{{ assets['icon_' ~ d.disease_id] }}" alt="" width="56" height="56" />
+          {{ ldi_icon(d.disease_id) }}
           <p class="ldi-figma__label">{{ d.title }}</p>
         </div>
         {% endif %}

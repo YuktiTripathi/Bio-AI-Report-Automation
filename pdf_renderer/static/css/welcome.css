@@ -112,7 +112,7 @@
   font-weight: 600;
   font-size: 14px;
   color: #ffffff;
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  /* No text-shadow — Chromium PDF flattens it into dark rectangular boxes */
   padding: 8px 0;
 }
 

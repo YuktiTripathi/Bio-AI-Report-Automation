@@ -178,15 +178,30 @@ class PdfViewModel:
         return payload
 
 
+def canonicalize_disease_id(disease_id: str) -> str:
+    """Map upstream aliases (e.g. pcos) to PDF catalog ids (pcos_pcod)."""
+    return pdf_config.DISEASE_ID_ALIASES.get(disease_id, disease_id)
+
+
 def _section_map(report: BioReport) -> dict[str, DiseaseSection]:
-    return {section.disease_id: section for section in report.disease_sections}
+    return {
+        canonicalize_disease_id(section.disease_id): section
+        for section in report.disease_sections
+    }
 
 
-def _card_from_section(section: DiseaseSection, *, insights: list[str] | None = None) -> DiseaseCardVM:
+def _card_from_section(
+    section: DiseaseSection,
+    *,
+    disease_id: str | None = None,
+    insights: list[str] | None = None,
+) -> DiseaseCardVM:
     score = int(section.current_status.score)
+    canonical_id = disease_id or canonicalize_disease_id(section.disease_id)
+    title = pdf_config.DISEASE_DISPLAY_NAMES.get(canonical_id) or section.title
     return DiseaseCardVM(
-        disease_id=section.disease_id,
-        title=section.title,
+        disease_id=canonical_id,
+        title=title,
         overview=section.overview or "",
         score=score,
         risk=section.current_status.risk,
@@ -233,7 +248,9 @@ def validate_view_model(report: BioReport, vm: PdfViewModel) -> None:
                 f"{page.disease_id}: score {page.score} != json {source.current_status.score}"
             )
         if page.title != source.title:
-            errors.append(f"{page.disease_id}: title mismatch")
+            display = pdf_config.DISEASE_DISPLAY_NAMES.get(page.disease_id)
+            if display is None or page.title != display:
+                errors.append(f"{page.disease_id}: title mismatch")
         if page.risk != source.current_status.risk:
             errors.append(f"{page.disease_id}: risk mismatch")
         tip_set = set(page.insights)
@@ -288,7 +305,7 @@ def build_pdf_view_model(report: BioReport) -> PdfViewModel:
     index_order = index_order_for_variant(variant)
 
     disease_pages = [
-        _card_from_section(by_id[disease_id])
+        _card_from_section(by_id[disease_id], disease_id=disease_id)
         for disease_id in order
         if disease_id in by_id
     ]
@@ -308,9 +325,10 @@ def build_pdf_view_model(report: BioReport) -> PdfViewModel:
     allowed_ids = set(order)
     top_risks: list[DiseaseCardVM] = []
     for highlight in report.executive_summary.top_disease_risks:
-        if highlight.disease_id not in allowed_ids:
+        highlight_id = canonicalize_disease_id(highlight.disease_id)
+        if highlight_id not in allowed_ids:
             continue
-        section = by_id.get(highlight.disease_id)
+        section = by_id.get(highlight_id)
         if section is None:
             continue
         insights = list(highlight.insights) if highlight.insights else []
@@ -320,7 +338,7 @@ def build_pdf_view_model(report: BioReport) -> PdfViewModel:
                 + list(section.nutrition.recommendations)
                 + list(section.lifestyle.exercise)
             )[: engine_config.TOP_INSIGHTS_PER_RISK]
-        card = _card_from_section(section, insights=insights)
+        card = _card_from_section(section, disease_id=highlight_id, insights=insights)
         # Prefer highlight percentile when present.
         if highlight.percentile is not None:
             card.percentile = highlight.percentile

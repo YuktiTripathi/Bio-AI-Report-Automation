@@ -127,6 +127,17 @@
   background: transparent;
 }
 
+.ldi-figma__icon--svg {
+  overflow: visible;
+}
+
+.ldi-figma__icon--svg svg {
+  display: block;
+  width: 56px;
+  height: 56px;
+  overflow: visible;
+}
+
 .ldi-figma__label {
   margin: 0;
   font-family: "DM Serif Display", "Times New Roman", Times, serif;

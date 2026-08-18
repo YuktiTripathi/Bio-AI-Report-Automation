@@ -1,0 +1,22 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Vector" filter="url(#pcosCircleShadow)">
+<path d="M32 56C47.464 56 60 43.464 60 28C60 12.536 47.464 0 32 0C16.536 0 4 12.536 4 28C4 43.464 16.536 56 32 56Z" fill="#12673F" fill-opacity="0.25"/>
+<path d="M32 0.5C47.1878 0.5 59.5 12.8122 59.5 28C59.5 43.1878 47.1878 55.5 32 55.5C16.8122 55.5 4.5 43.1878 4.5 28C4.5 12.8122 16.8122 0.500002 32 0.5Z" stroke="url(#pcosCircleGrad)"/>
+</g>
+<defs>
+<filter id="pcosCircleShadow" x="0" y="0" width="64" height="64" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="2"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.0235294 0 0 0 0 0.207843 0 0 0 0 0.2 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_8"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_8" result="shape"/>
+</filter>
+<linearGradient id="pcosCircleGrad" x1="32" y1="0" x2="32" y2="56" gradientUnits="userSpaceOnUse">
+<stop stop-color="#CC203B"/>
+<stop offset="1" stop-color="#063533"/>
+</linearGradient>
+</defs>
+</svg>

@@ -148,11 +148,11 @@
 .aag-figma__score-row {
   margin: 0;
   display: grid;
-  /* Score left | fixed pill column right — same slot for every risk band */
-  grid-template-columns: minmax(0, 1fr) 64px;
+  /* Score takes natural width; pill sits on the right edge (avoids overlap). */
+  grid-template-columns: max-content 1fr;
   align-items: center;
-  column-gap: 4px;
-  min-height: 16px;
+  column-gap: 6px;
+  min-height: 17px;
   width: 100%;
 }
 
@@ -168,27 +168,32 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  max-width: 64px;
-  min-height: 15px;
-  padding: 2px 4px;
+  width: auto;
+  max-width: none;
+  min-height: 17px;
+  padding: 3px 5px;
   border-radius: 24px;
-  font-size: 6.4px;
+  font-size: 7px;
   font-weight: 500;
   color: #000000;
   white-space: nowrap;
   line-height: 1;
   letter-spacing: -0.02em;
   box-sizing: border-box;
-  justify-self: stretch;
+  justify-self: end;
 }
 
 /* Same geometry for Healthy / Increased / High / Very High */
 .aag-figma__pill--healthy {
-  font-size: 6.4px;
+  font-size: 7px;
   font-weight: 500;
   letter-spacing: -0.02em;
-  padding: 2px 4px;
+  padding: 3px 5px;
+}
+
+/* Red Very High Risk pill — white label for contrast (AAG only). */
+.aag-figma__pill--very-high {
+  color: #ffffff;
 }
 
 .aag-figma__legend {
