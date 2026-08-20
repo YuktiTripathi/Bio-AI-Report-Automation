@@ -21,6 +21,7 @@ test_engine/comp_*
 test_engine/compare_*
 test_engine/prev_*
 test_engine/pdf_*
+!test_engine/pdf_ui.py
 test_engine/hs_*
 test_engine/ddt_*
 test_engine/figma_*
