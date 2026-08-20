@@ -139,7 +139,7 @@ def create_production_service() -> BioReportService:
     )
 
 
-async def run_pipeline(input_path: Path) -> Path:
+async def run_pipeline(input_path: Path) -> dict[str, Any]:
     """Run the production enrichment + assembly path with a local assessment file.
 
     Equivalent to ``generate_for_record`` after the MetSights fetch step.
@@ -226,20 +226,18 @@ async def run_pipeline(input_path: Path) -> Path:
         f"template_version={report.report_metadata.template_version}",
     )
 
-    output_path = input_path.with_name(f"output_{input_path.name}")
-    output_path.write_text(
-        json.dumps(report.to_dict(), indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
-    log("Output saved", str(output_path.resolve()))
-    return output_path
+    # Additive test-runner requirement:
+    # Do not write `output_*.json` files. Print the JSON object instead.
+    report_json = report.to_dict()
+    print(json.dumps(report_json, indent=2, ensure_ascii=False))
+    return report_json
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Run the full production Bio-AI Report Engine against a local assessment JSON "
-            "(same enrichment + assembly as GET /bioai-report/content/{record_id}; "
+            "(same enrichment + assembly as GET /bioai-report/{assessment_instance_id}; "
             "no FastAPI / JWT)."
         ),
     )

@@ -2,7 +2,7 @@
 
 Frontend contract — single call, single input:
 
-    GET /bioai-report/content/{record_id}
+    GET /bioai-report/{assessment_instance_id}
 
 The backend fetches assessment + patient demographics, enriches, assembles,
 and returns one self-contained BioReport JSON. The frontend only renders it.
@@ -10,10 +10,9 @@ and returns one self-contained BioReport JSON. The frontend only renders it.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from common.responses import success_response
 from core.dependencies import get_current_user
 from core.exceptions import AppError
 from db.session import get_db
@@ -24,37 +23,33 @@ from modules.bioai_report.report_engine.services.report_service import BioReport
 router = APIRouter(prefix="/bioai-report", tags=["bioai-report"])
 
 
-@router.get("/content/{record_id}")
+@router.get("/{assessment_instance_id}")
 async def get_bioreport_content(
-    record_id: str,
-    assessment_type_code: str | None = Query(
-        default=None,
-        description=(
-            "Optional MetSights assessment type code (e.g. 1=Basic, 2=Pro). "
-            "Not required from the frontend for normal Bio-AI reports."
-        ),
-    ),
+    assessment_instance_id: int,
     db: AsyncSession = Depends(get_db),
     _user=Depends(get_current_user),
     report_service: BioReportService = Depends(get_bioreport_service),
 ):
-    """Return one complete BioReport for ``record_id``.
+    """Return one complete BioReport for ``assessment_instance_id``.
 
     Pipeline (all server-side):
-    1. Fetch assessment JSON from MetSights ``GET /reports/{record_id}/``
-    2. Enrich patient demographics for the same ``record_id``
-    3. Merge into one assessment object
-    4. Build BioReport (patient → summary → disease sections + KB)
-    5. Return ``{ data: BioReport, meta: {} }``
+    1. Resolve Metsights ``record_id`` from DB using ``assessment_instance_id``
+    2. Fetch assessment JSON from MetSights ``GET /reports/{record_id}/``
+    3. Enrich patient demographics for the same ``record_id``
+    4. Merge into one assessment object
+    5. Build BioReport (patient → summary → disease sections + KB)
+    6. Return the raw ``BioReport`` JSON object
     """
-    rid = (record_id or "").strip()
-    if not rid:
-        raise AppError(status_code=422, error_code="INVALID_STATE", message="record_id is required")
+    if assessment_instance_id is None:
+        raise AppError(
+            status_code=422,
+            error_code="INVALID_STATE",
+            message="assessment_instance_id is required",
+        )
 
     try:
-        report = await report_service.generate_for_record(
-            record_id=rid,
-            assessment_type_code=assessment_type_code,
+        report = await report_service.generate_for_assessment_instance(
+            assessment_instance_id=int(assessment_instance_id),
             db=db,
         )
     except KnowledgeBaseError as exc:
@@ -76,4 +71,5 @@ async def get_bioreport_content(
             message=str(exc),
         ) from exc
 
-    return success_response(report.to_dict())
+    # Additive: return the final report JSON object directly.
+    return report.to_dict()

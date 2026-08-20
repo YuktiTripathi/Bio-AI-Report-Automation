@@ -20,6 +20,7 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from modules.assessments.repository import AssessmentsRepository
 from modules.bioai_report.report_engine.builders.report_builder import build_bioreport
 from modules.bioai_report.report_engine.knowledge_base.loader import KnowledgeBaseStore
 from modules.bioai_report.report_engine.models.report import BioReport
@@ -67,6 +68,55 @@ class BioReportService:
         return await self.generate_from_assessment_with_enrichment(
             assessment,
             record_id=rid,
+            db=db,
+        )
+
+    async def generate_for_assessment_instance(
+        self,
+        *,
+        assessment_instance_id: int,
+        db: AsyncSession,
+    ) -> BioReport:
+        """Production pipeline: ``assessment_instance_id`` → assessment → enrich → BioReport.
+
+        This resolves the underlying MetSights ``record_id`` using existing DB
+        repository relationships, then reuses the unchanged enrichment + assembly
+        pipeline.
+        """
+        if assessment_instance_id is None:
+            raise ValueError("assessment_instance_id is required")
+        instance_id = int(assessment_instance_id)
+        if instance_id <= 0:
+            raise ValueError("assessment_instance_id must be positive")
+
+        assessments_repo = AssessmentsRepository()
+        instance = await assessments_repo.get_instance_by_id(
+            db,
+            assessment_instance_id=instance_id,
+        )
+        if instance is None:
+            raise ValueError(f"assessment_instance_id not found: {instance_id}")
+
+        record_id = (getattr(instance, "metsights_record_id", None) or "").strip()
+        if not record_id:
+            raise ValueError(f"metsights_record_id missing for assessment_instance_id={instance_id}")
+
+        # Derive the optional MetSights assessment type code from the linked package.
+        assessment_type_code: str | None = None
+        package_id = getattr(instance, "package_id", None)
+        if package_id is not None:
+            package = await assessments_repo.get_package_by_id(db, package_id=int(package_id))
+            assessment_type_code = getattr(package, "assessment_type_code", None) if package else None
+
+        assessment = await self._assessment_service.fetch_raw(
+            record_id=record_id,
+            assessment_type_code=assessment_type_code,
+        )
+
+        # Keep existing enrichment logic unchanged; it runs on the resolved MetSights record_id.
+        return await self.generate_from_assessment_with_enrichment(
+            assessment,
+            record_id=record_id,
             db=db,
         )
 
