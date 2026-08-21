@@ -13,6 +13,9 @@ test_engine/preview_*.png
 BIO-AI-report-*.pdf
 output_*.json
 
+# Permanent-link store (JSON only; PDFs regenerated on demand)
+storage/
+
 # Debug / scratch artifacts under test_engine
 test_engine/_*
 test_engine/check_*
