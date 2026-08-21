@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><style>
+  html,body { margin:0; padding:0; background:#002826; }
+  .page { position:relative; width:595px; height:842px; overflow:hidden; background:#002826; }
+  .bg { position:absolute; left:-3px; top:-7px; width:601px; height:855px; display:block; }
+  .rings { position:absolute; left:160px; top:-3px; width:274px; height:848px; opacity:0.7; mix-blend-mode:luminosity; }
+  /* Figma body frame 229,266 137×437 with glow overflow ~7% */
+  .body { position:absolute; left:219px; top:256px; width:157px; height:457px; display:block; }
+  .body-white { position:absolute; left:229px; top:266px; width:137px; height:437px; display:block;
+    /* recolor pink silhouette export to white via CSS filter is hard; use mask approach below */
+  }
+</style></head><body>
+<div class="page" id="page">
+  <img class="bg" src="file:///Users/teamsupershyft/PDF%20report%20generation/Bio-AI-Report-Automation/pdf_renderer/static/assets/at_a_glance/bg_full.svg" />
+  <img class="rings" src="file:///Users/teamsupershyft/PDF%20report%20generation/Bio-AI-Report-Automation/pdf_renderer/static/assets/at_a_glance/rings.svg" />
+  <img class="body" id="glow" src="file:///Users/teamsupershyft/PDF%20report%20generation/Bio-AI-Report-Automation/pdf_renderer/static/assets/at_a_glance/body_glow.svg" />
+</div>
+</body></html>

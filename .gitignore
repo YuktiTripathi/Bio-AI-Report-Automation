@@ -3,40 +3,18 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .DS_Store
-test_engine/output_*.pdf
+
 test_engine/output_*.html
 test_engine/preview_*.html
 test_engine/preview_*.png
 *.egg-info/
 
 # Generated patient PDFs / local fixtures
-BIO-AI-report-*.pdf
+
 output_*.json
 
 # Permanent-link store (JSON only; PDFs regenerated on demand)
 storage/
 
 # Debug / scratch artifacts under test_engine
-test_engine/_*
-test_engine/check_*
-test_engine/verify_*
-test_engine/comp_*
-test_engine/compare_*
-test_engine/prev_*
-test_engine/pdf_*
-!test_engine/pdf_ui.py
-test_engine/hs_*
-test_engine/ddt_*
-test_engine/figma_*
-test_engine/bgprev_*
-test_engine/thumb_*
-test_engine/*_preview.png
-test_engine/*_compare.png
-test_engine/*_diff.png
-test_engine/aag_*
-test_engine/alt_*
-test_engine/backcover_*
-test_engine/cover_*
-test_engine/divider_*
-test_engine/icon_*
-test_engine/new_*
+
