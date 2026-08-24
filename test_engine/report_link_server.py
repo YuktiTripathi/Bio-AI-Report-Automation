@@ -15,10 +15,15 @@ Usage (from repo root):
     PYTHONPATH=. python test_engine/report_link_server.py
 
 API:
-    POST /api/reports          JSON body → { slug, url, record_id, patient, variant }
+    POST /api/reports          JSON body (payload) → { slug, url, record_id, patient, variant }
     GET  /r/{slug}             application/pdf (inline)
     GET  /r/{slug}?dl=1        force download
     GET  /                     status page
+
+CORS:
+    Allowed origin (default): https://api.supershyft.com
+    Override with BIOAI_CORS_ORIGINS (comma-separated).
+    JSON is always taken from the POST body — never fetched from storage for register.
 """
 
 from __future__ import annotations
@@ -60,7 +65,24 @@ HOST = os.environ.get("BIOAI_LINK_HOST", "127.0.0.1")
 PORT = int(os.environ.get("BIOAI_LINK_PORT", "8790"))
 PUBLIC_BASE = os.environ.get("BIOAI_PUBLIC_BASE_URL", f"http://{HOST}:{PORT}").rstrip("/")
 
+# Browser Origin never includes a trailing slash.
+_DEFAULT_CORS_ORIGINS = ("https://api.supershyft.com",)
+_CORS_ORIGINS = tuple(
+    o.strip().rstrip("/")
+    for o in os.environ.get("BIOAI_CORS_ORIGINS", ",".join(_DEFAULT_CORS_ORIGINS)).split(",")
+    if o.strip()
+)
+
 _SLUG_RE = re.compile(r"^/r/([A-Za-z0-9._-]+)/?$")
+
+
+def _cors_origin(request_origin: str | None) -> str | None:
+    if not request_origin:
+        return None
+    origin = request_origin.strip().rstrip("/")
+    if origin in _CORS_ORIGINS:
+        return origin
+    return None
 
 
 def _public_url(slug: str) -> str:
@@ -83,6 +105,32 @@ class ReportLinkHandler(BaseHTTPRequestHandler):
     def log_message(self, fmt: str, *args) -> None:
         sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
 
+    def _set_cors_headers(self) -> None:
+        allowed = _cors_origin(self.headers.get("Origin"))
+        if not allowed:
+            return
+        self.send_header("Access-Control-Allow-Origin", allowed)
+        self.send_header("Vary", "Origin")
+        self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
+        self.send_header(
+            "Access-Control-Allow-Headers",
+            "Content-Type, Authorization, Accept",
+        )
+        self.send_header("Access-Control-Max-Age", "86400")
+
+    def do_OPTIONS(self) -> None:  # noqa: N802
+        """CORS preflight for POST /api/reports from https://api.supershyft.com."""
+        if self.path.rstrip("/") != "/api/reports":
+            self.send_error(404, "Not found")
+            return
+        if not _cors_origin(self.headers.get("Origin")):
+            self.send_error(403, "Origin not allowed")
+            return
+        self.send_response(204)
+        self._set_cors_headers()
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+
     def do_GET(self) -> None:  # noqa: N802
         parsed = urlparse(self.path)
         if parsed.path in {"/", "/health"}:
@@ -97,9 +145,15 @@ class ReportLinkHandler(BaseHTTPRequestHandler):
         if self.path.rstrip("/") != "/api/reports":
             self.send_error(404, "Not found")
             return
+        # Reject disallowed browser origins; server-to-server (no Origin) is allowed.
+        origin = self.headers.get("Origin")
+        if origin and not _cors_origin(origin):
+            return self._text(403, "Origin not allowed")
+
         length = int(self.headers.get("Content-Length") or 0)
         raw = self.rfile.read(length)
         try:
+            # JSON always comes from this request payload — not from stored files.
             payload = json.loads(raw.decode("utf-8"))
             if not isinstance(payload, dict):
                 raise ValueError("JSON body must be an object")
@@ -139,7 +193,8 @@ class ReportLinkHandler(BaseHTTPRequestHandler):
 <h1>Bio-AI report links</h1>
 <p>Register once: we store the PDF and return a permanent secret link.</p>
 <ul>
-  <li><code>POST {PUBLIC_BASE}/api/reports</code> — BioReport JSON → <code>url</code> with secret slug</li>
+  <li><code>POST {PUBLIC_BASE}/api/reports</code> — BioReport JSON payload → <code>url</code></li>
+  <li>CORS origin: <code>https://api.supershyft.com</code></li>
   <li><code>GET {PUBLIC_BASE}/r/&lt;slug&gt;</code> — view stored PDF</li>
   <li><code>GET …/r/&lt;slug&gt;?dl=1</code> — force download</li>
 </ul>
@@ -178,6 +233,7 @@ class ReportLinkHandler(BaseHTTPRequestHandler):
         data = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "application/json; charset=utf-8")
+        self._set_cors_headers()
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
@@ -186,6 +242,7 @@ class ReportLinkHandler(BaseHTTPRequestHandler):
         data = message.encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self._set_cors_headers()
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
@@ -195,6 +252,7 @@ def main() -> int:
     print(f"JSON store:  {store_dir()}")
     print(f"PDF store:   {pdf_dir()}")
     print(f"Public base: {PUBLIC_BASE}")
+    print(f"CORS allow:  {', '.join(_CORS_ORIGINS) or '(none)'}")
     print(f"Listening:   http://{HOST}:{PORT}/")
     server = ThreadingHTTPServer((HOST, PORT), ReportLinkHandler)
     try:

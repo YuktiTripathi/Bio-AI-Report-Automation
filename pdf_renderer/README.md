@@ -1,31 +1,43 @@
 # Bio-AI PDF Renderer
 
-Figma-first HTML → PDF pipeline for BioReport JSON.
+Figma-first HTML → PDF pipeline for finished BioReport JSON.
 
-## Layout source
+## Scope
 
-- Slot inventory: `mapping/slot_inventory.yaml` (from `BIO-AI-report-M.pdf` / `BIO-AI-report-F.pdf`)
-- Field matrix: `mapping/field_matrix.yaml`
-- Replace with live Figma frames when the design file URL is available; keep the same `slot_id` names.
+This service does **not** fetch MetSights or assemble report content. The
+upstream backend sends complete BioReport JSON; this package:
 
-## Pipeline
+1. Validates JSON against `report_engine.models.report.BioReport`
+2. Builds a gender-aware PDF view-model (`male` / `female`)
+3. Renders Jinja HTML templates + SVG graphs to A4 pages
+4. Prints PDF via Playwright/Chromium
+5. Stores JSON + PDF once and serves a permanent link (`/r/{slug}`)
 
-1. `report_engine` builds BioReport JSON
-2. `view_model.py` builds a gender-aware PDF view-model (`male` / `female`)
-3. Validation gate blocks mismatched disease scores / tip leakage
-4. Jinja HTML templates + SVG graphs render A4 pages
-5. Playwright/Chromium prints `application/pdf`
+## Permanent link API
 
-## API
+```bash
+# Register (JSON from request payload → PDF once → permanent URL)
+# CORS: https://api.supershyft.com
+curl -X POST https://bio-ai-reports.supershyft.com/api/reports \
+  -H "Content-Type: application/json" \
+  -H "Origin: https://api.supershyft.com" \
+  --data-binary @report.json
 
-- `GET /bioai-report/content/{record_id}` → BioReport JSON
-- `GET /bioai-report/pdf/{record_id}` → PDF download
+# Fetch stored PDF
+# GET https://bio-ai-reports.supershyft.com/r/{slug}
+```
+
+Local server:
+
+```bash
+PYTHONPATH=. python test_engine/report_link_server.py
+```
 
 ## Offline render
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+# Windows: .venv\Scripts\activate
 pip install -r requirements-pdf.txt
 playwright install chromium
 
@@ -39,7 +51,12 @@ PYTHONPATH=. python test_engine/render_pdf.py test_engine/output_report_user1.js
 PYTHONPATH=. pytest tests/test_pdf_mapping.py -v
 ```
 
-## Schema extensions for PDF completeness
+## Layout source
 
-- `DiseaseSection.contributing_factors[]` — “What could be affecting your results?”
-- `DiseaseHighlight.percentile` + `DiseaseHighlight.insights[]` — page 10 per-disease tips
+- Slot inventory: `mapping/slot_inventory.yaml`
+- Field matrix: `mapping/field_matrix.yaml`
+
+## Optional Health Trends
+
+When BioReport includes a non-empty `health_trends.series`, divider + chart
+pages are inserted after Lifestyle Diseases Risk Analysis.

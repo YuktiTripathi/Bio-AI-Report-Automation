@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from pathlib import Path
 
 import pytest
@@ -16,12 +17,13 @@ from modules.bioai_report.pdf_renderer.view_model import (
     resolve_gender_variant,
     validate_view_model,
 )
-from modules.bioai_report.report_engine.builders.report_builder import build_bioreport
 from modules.bioai_report.report_engine.models.report import BioReport
 
 ROOT = Path(__file__).resolve().parents[1]
 USER1 = ROOT / "test_engine" / "output_report_user1.json"
 SAMPLE = ROOT / "report_engine" / "sample_output.json"
+HEALTHY = ROOT / "test_engine" / "_sample_healthy.json"
+PREVIEW = ROOT / "test_engine" / "preview_harsh.json"
 
 
 def _load_report(path: Path) -> BioReport:
@@ -66,7 +68,11 @@ def test_user1_view_model_binds_scores_by_disease_id(user1_report: BioReport):
         source = by_json[page.disease_id]
         assert page.score == int(source.current_status.score)
         assert page.risk == source.current_status.risk
-        assert page.title == source.title
+        # Prefer DISEASE_DISPLAY_NAMES when present; otherwise JSON title.
+        expected_title = pdf_config.DISEASE_DISPLAY_NAMES.get(
+            page.disease_id, source.title
+        )
+        assert page.title == expected_title
         assert page.band == source.current_status.band
 
     # PDF disease order is template-fixed, not JSON score order.
@@ -83,9 +89,6 @@ def test_female_variant_includes_metabolic_and_pcos_when_present(sample_report: 
     assert "pcos_pcod" not in pdf_config.DISEASE_ORDER_MALE
 
     female = _with_gender(sample_report, "female")
-    # Attach a minimal PCOS section so female pages include it.
-    from copy import deepcopy
-
     payload = female.model_dump()
     donor = next(s for s in payload["disease_sections"] if s["disease_id"] == "thyroid_health")
     pcos = deepcopy(donor)
@@ -101,12 +104,11 @@ def test_female_variant_includes_metabolic_and_pcos_when_present(sample_report: 
     assert "metabolic_syndrome" in rendered_ids
     assert "pcos_pcod" in rendered_ids
     assert rendered_ids == [d for d in pdf_config.DISEASE_ORDER_FEMALE if d in set(rendered_ids)]
+    # Base pages + disease detail pages + back cover (+ optional health trends = 0 here)
     assert vm.page_count == 8 + len(rendered_ids) + 1
 
 
 def test_at_a_glance_slots_differ_by_gender(sample_report: BioReport):
-    from copy import deepcopy
-
     from modules.bioai_report.pdf_renderer.html_builder import (
         _GLANCE_SLOTS_FEMALE,
         _GLANCE_SLOTS_MALE,
@@ -158,7 +160,6 @@ def test_top_risk_insights_come_only_from_same_disease(user1_report: BioReport):
         )
         for tip in risk.insights:
             assert tip in allowed
-        # Score must match JSON for that disease_id.
         assert risk.score == int(source.current_status.score)
 
 
@@ -178,7 +179,6 @@ def test_html_gender_honorific_branches(sample_report: BioReport):
     female_vm = build_pdf_view_model(_with_gender(sample_report, "female"))
     assert "Mr." in build_report_html(male_vm)
     assert "Ms." in build_report_html(female_vm)
-    # Tests Covered pages removed from PDF; gender catalogs remain on the view-model.
     assert "Kidney Function with K" in female_vm.tests_page1
     female_items = [
         item
@@ -192,68 +192,26 @@ def test_html_gender_honorific_branches(sample_report: BioReport):
 
 def test_validation_rejects_tampered_score(user1_report: BioReport):
     vm = build_pdf_view_model(user1_report)
-    # Tamper after build to simulate wrong mapping.
     vm.disease_pages[0].score = 999
     with pytest.raises(PdfValidationError):
         validate_view_model(user1_report, vm)
 
 
-def test_build_bioreport_includes_insights_and_factors():
-    assessment = {
-        "record": "TEST-REC",
-        "name": "Test User",
-        "age": 30,
-        "gender": "male",
-        "metabolic_score": 20,
-        "metabolic_age": 28,
-        "metabolic_health_status": "Healthy",
-        "assessment_date": "2026-01-01T00:00:00Z",
-        "diseases": [
-            {
-                "code": "hypertension",
-                "name": "Hypertension",
-                "risk_status": "Healthy",
-                "risk_score_scaled": 17,
-                "disease_percentile": 6,
-                "lifestyle_contribution": 0,
-                "contributing_factors": ["Low-normal magnesium", "Blood sugar as future risk"],
-            },
-            {
-                "code": "diabetes",
-                "name": "Type 2 diabetes",
-                "risk_status": "Healthy",
-                "risk_score_scaled": 13,
-                "disease_percentile": 2,
-                "lifestyle_contribution": 9,
-                "contributing_factors": ["Vit D insufficiency"],
-            },
-        ],
-    }
-    report = build_bioreport(assessment, record_id="TEST-REC")
+def test_contributing_factors_flow_to_view_model():
+    report = _load_report(HEALTHY)
     ht = next(s for s in report.disease_sections if s.disease_id == "hypertension")
     assert ht.contributing_factors == [
         "Low-normal magnesium",
         "Blood sugar as future risk",
     ]
-    assert report.executive_summary.top_disease_risks
-    top = report.executive_summary.top_disease_risks[0]
-    assert top.insights
-    assert top.percentile == 6 or top.disease_id != "hypertension" or top.percentile == ht.current_status.percentile
-
     vm = build_pdf_view_model(report)
     page = next(p for p in vm.disease_pages if p.disease_id == "hypertension")
     assert page.contributing_factors == ht.contributing_factors
 
 
-def test_user_fixtures_build_view_models():
-    for name in ("report_user1.json", "report_user2.json", "report_user3.json"):
-        path = ROOT / "test_engine" / name
-        raw = json.loads(path.read_text(encoding="utf-8"))
-        body = raw.get("data", raw)
-        # Minimal demographics so gender variant resolves.
-        body.setdefault("gender", "male")
-        body.setdefault("name", f"Fixture {name}")
-        report = build_bioreport(body, record_id=str(body.get("record") or body.get("id")))
+def test_bioreport_fixtures_build_view_models():
+    for path in (USER1, SAMPLE, HEALTHY, PREVIEW):
+        report = _load_report(path)
         vm = build_pdf_view_model(report)
         html = build_report_html(vm)
         assert vm.disease_pages

@@ -1,12 +1,12 @@
-"""Central configuration for BioReport content assembly and render limits.
+"""Shared limits and version labels used by the PDF view-model.
 
-All array truncation and version labels live here so builders stay free of
-hardcoded magic numbers.
+Content assembly lives in the upstream backend; this package only validates
+and renders finished BioReport JSON.
 """
 
 from __future__ import annotations
 
-# --- Content limits (frontend must not slice) ---
+# --- Display limits (PDF view-model truncation) ---
 TOP_LIFESTYLE_TIPS = 3
 TOP_DIET_TIPS = 3
 TOP_FOODS = 5

@@ -1,7 +1,7 @@
-"""BioReport output contract consumed by the frontend renderer.
+"""BioReport JSON contract consumed by the PDF renderer.
 
-Nested disease sections are render-ready PDF blocks. Knowledge-base field
-names are never exposed to the frontend.
+Nested disease sections are render-ready PDF blocks. Upstream backends send
+finished BioReport JSON; this package only validates and renders it.
 """
 
 from __future__ import annotations
@@ -160,7 +160,7 @@ class ReportMetadata(BaseModel):
     template_version: str
     generated_at: str | None = None
     disease_count: int = 0
-    source: str = "metsights"
+    source: str = "bioreport"
 
 
 class TrendPoint(BaseModel):
@@ -194,7 +194,7 @@ class HealthTrends(BaseModel):
 
 
 class BioReport(BaseModel):
-    """Final JSON contract between the content engine and the frontend."""
+    """Finished report JSON accepted by the PDF + permanent-link service."""
 
     model_config = ConfigDict(extra="ignore")
 

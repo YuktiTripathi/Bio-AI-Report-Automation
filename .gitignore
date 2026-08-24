@@ -3,18 +3,24 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .DS_Store
+*.egg-info/
 
+# Generated previews / local fixtures
 test_engine/output_*.html
 test_engine/preview_*.html
 test_engine/preview_*.png
-*.egg-info/
-
-# Generated patient PDFs / local fixtures
-
 output_*.json
+output_*.pdf
+*.pdf
 
 # Permanent-link store (JSON + PDF files — do not commit)
 storage/
 
 # Debug / scratch artifacts under test_engine
-
+test_engine/_*.png
+test_engine/_*.html
+test_engine/_*.pdf
+test_engine/verify_*.png
+test_engine/check_*.png
+test_engine/prev__*.png
+test_engine/figma_gauge/
