@@ -1,0 +1,12 @@
+{# Health Trends section divider — Figma node 373:97955 (full-page export + dynamic page no) #}
+<section
+  class="page ht-div-figma"
+  data-template="HealthTrendsDivider"
+  data-page="{{ ht_divider_page_no }}"
+  data-node-id="373:97955"
+>
+  <div class="ht-div-figma__bg" aria-hidden="true">
+    <img class="ht-div-figma__bg-img" src="{{ assets.ht_page_bg }}" alt="" />
+  </div>
+  <p class="ht-div-figma__page-no">{{ "%02d"|format(ht_divider_page_no) }}</p>
+</section>

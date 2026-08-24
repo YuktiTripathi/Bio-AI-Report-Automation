@@ -13,7 +13,7 @@ test_engine/preview_*.png
 
 output_*.json
 
-# Permanent-link store (JSON only; PDFs regenerated on demand)
+# Permanent-link store (JSON + PDF files — do not commit)
 storage/
 
 # Debug / scratch artifacts under test_engine

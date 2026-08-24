@@ -163,6 +163,36 @@ class ReportMetadata(BaseModel):
     source: str = "metsights"
 
 
+class TrendPoint(BaseModel):
+    """One assessment point on a Health Trends chart."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    date: str
+    score: float | int
+
+
+class TrendSeries(BaseModel):
+    """Risk-score history for one disease / condition."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    disease_id: str
+    title: str | None = None
+    points: list[TrendPoint] = Field(default_factory=list)
+
+
+class HealthTrends(BaseModel):
+    """Optional multi-assessment trends block for PDF Health Trends pages.
+
+    When absent or ``series`` is empty, Health Trends pages are omitted.
+    """
+
+    model_config = ConfigDict(extra="ignore")
+
+    series: list[TrendSeries] = Field(default_factory=list)
+
+
 class BioReport(BaseModel):
     """Final JSON contract between the content engine and the frontend."""
 
@@ -171,6 +201,7 @@ class BioReport(BaseModel):
     patient: PatientInfo
     executive_summary: ExecutiveSummary
     disease_sections: list[DiseaseSection] = Field(default_factory=list)
+    health_trends: HealthTrends | None = None
     report_metadata: ReportMetadata
 
     def to_dict(self) -> dict[str, Any]:

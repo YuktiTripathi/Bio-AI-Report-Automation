@@ -1,0 +1,220 @@
+/* Health Trends charts — Figma node 373:97792 (595×842) */
+
+.page.ht-figma,
+.ht-figma {
+  width: 595px;
+  height: 842px;
+  padding: 0;
+  margin: 0 auto;
+  background: #061c1a;
+  color: #ffffff;
+  overflow: hidden;
+  position: relative;
+  page-break-after: always;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+.ht-figma__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ht-figma__bg-img {
+  position: absolute;
+  height: 100%;
+  left: -1.86%;
+  top: 0.01%;
+  width: 174.17%;
+  max-width: none;
+  object-fit: cover;
+  opacity: 0.95;
+}
+
+/* Figma 373:97927 — Inter Regular 22px @ left 37 / top 38 */
+.ht-figma__title {
+  position: absolute;
+  left: 37px;
+  top: 38px;
+  z-index: 2;
+  margin: 0;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: normal;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* Figma 373:97928 — white rule from after title → right margin */
+.ht-figma__title-line {
+  position: absolute;
+  left: 194px;
+  top: 53px;
+  width: 363px;
+  height: 1px;
+  z-index: 2;
+  display: block;
+  object-fit: fill;
+}
+
+/* Figma 373:97929 — DM Serif Display Italic 16px */
+.ht-figma__subtitle {
+  position: absolute;
+  left: 37px;
+  top: 70px;
+  z-index: 2;
+  margin: 0;
+  font-family: "DM Serif Display", Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: normal;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.ht-figma__grid {
+  position: absolute;
+  left: 37px;
+  top: 117px;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 253px 253px;
+  grid-template-rows: repeat(3, 141px);
+  gap: 18px 14px;
+  width: 520px;
+  box-sizing: border-box;
+}
+
+.ht-figma__card {
+  width: 253px;
+  height: 141px;
+  margin: 0;
+  padding: 12px 8px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  background: rgba(6, 28, 26, 0.25);
+  box-sizing: border-box;
+}
+
+.ht-figma__card-title {
+  margin: 0 0 6px;
+  text-align: center;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.11px;
+  color: #ffffff;
+}
+
+.ht-figma__chart {
+  width: 236px;
+  height: 88px;
+  margin: 0 auto;
+}
+
+.ht-figma__chart svg {
+  display: block;
+  width: 236px;
+  height: 88px;
+}
+
+.ht-figma__legend {
+  position: absolute;
+  left: 50%;
+  bottom: 78px;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 22px;
+  white-space: nowrap;
+}
+
+.ht-figma__legend-item {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: #ffffff;
+}
+
+.ht-figma__legend-text {
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+  font-size: 8.6px;
+  font-weight: 400;
+  line-height: 1.15;
+  text-align: left;
+}
+
+.ht-figma__dot {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin-top: 1px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.ht-figma__dot--healthy { background: #2e6b4e; }
+.ht-figma__dot--increased { background: #f8d232; }
+.ht-figma__dot--high { background: #eaa546; }
+.ht-figma__dot--very-high { background: #c6203b; }
+
+.ht-figma__footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 52px;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.ht-figma__footer-inner {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 32px 18px;
+  box-sizing: border-box;
+}
+
+.ht-figma__powered {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #8ccbd6;
+  font-size: 12px;
+}
+
+.ht-figma__powered img {
+  height: 14px;
+  width: auto;
+  display: block;
+}
+
+.ht-figma__page-no {
+  margin: 0;
+  font-size: 12px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.ht-figma__footer-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ht-figma__mark {
+  width: 20px;
+  height: 20px;
+  display: block;
+  object-fit: cover;
+}

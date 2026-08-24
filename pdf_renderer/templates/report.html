@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="{{ risk_summary_css_href }}" />
   <link rel="stylesheet" href="{{ disease_divider_css_href }}" />
   <link rel="stylesheet" href="{{ disease_detail_css_href }}" />
+  <link rel="stylesheet" href="{{ health_trends_divider_css_href }}" />
+  <link rel="stylesheet" href="{{ health_trends_css_href }}" />
   <link rel="stylesheet" href="{{ back_cover_css_href }}" />
 </head>
 <body class="{% if for_http %}preview-mode{% endif %}">
@@ -68,6 +70,18 @@
   {% include "pages/disease_detail.html" %}
   {% endif %}
   {% endfor %}
+
+  {# Health Trends (optional) — after Lifestyle Diseases Risk Analysis; only if JSON has health_trends #}
+  {% if vm.has_health_trends %}
+  {% if show_all or only in ['HealthTrendsDivider', 'health_trends_divider', 'trends_divider'] or only == (ht_divider_page_no|string) %}
+  {% include "pages/health_trends_divider.html" %}
+  {% endif %}
+  {% for page in health_trends_pages %}
+  {% if show_all or only == (page.page_no|string) or only in ['HealthTrends', 'health_trends', 'trends'] %}
+  {% include "pages/health_trends.html" %}
+  {% endif %}
+  {% endfor %}
+  {% endif %}
 
   {# Back cover — Figma 451:6850; static for every PDF #}
   {% if show_all or only in ['BackCover', 'back_cover', 'back'] or only == (vm.page_count|string) %}

@@ -1,31 +1,67 @@
-"""Persist BioReport JSON by record_id (PDFs are regenerated on demand)."""
+"""Persist BioReport JSON and PDF under a secret public slug.
+
+Public URLs use a random slug (not the MetSights record_id):
+  https://bio-ai-reports.example/r/{slug}
+
+Files on disk:
+  storage/bioreports/{slug}.json
+  storage/pdfs/{slug}.pdf
+
+Internal record_id stays inside the JSON for your own tracking.
+"""
 
 from __future__ import annotations
 
 import json
+import os
 import re
+import secrets
 import uuid
 from pathlib import Path
 from typing import Any
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_STORE_DIR = _REPO_ROOT / "storage" / "bioreports"
+DEFAULT_PDF_DIR = _REPO_ROOT / "storage" / "pdfs"
 
+# URL-safe chars only (matches /r/{slug} route)
 _SAFE_ID = re.compile(r"[^A-Za-z0-9._-]+")
+_SLUG_BYTES = 16  # token_urlsafe(16) ≈ 22 chars — hard to guess
 
 
 def store_dir() -> Path:
-    path = Path(__import__("os").environ.get("BIOAI_REPORT_STORE", str(DEFAULT_STORE_DIR)))
+    path = Path(os.environ.get("BIOAI_REPORT_STORE", str(DEFAULT_STORE_DIR)))
     path.mkdir(parents=True, exist_ok=True)
     return path
 
 
-def sanitize_record_id(raw: str) -> str:
+def pdf_dir() -> Path:
+    override = os.environ.get("BIOAI_PDF_STORE")
+    if override:
+        path = Path(override)
+    else:
+        path = DEFAULT_PDF_DIR
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def sanitize_id(raw: str) -> str:
     cleaned = _SAFE_ID.sub("_", (raw or "").strip())
     return cleaned[:120] or uuid.uuid4().hex
 
 
-def resolve_record_id(payload: dict[str, Any]) -> str:
+def new_public_slug() -> str:
+    """Cryptographically random slug for permanent public links."""
+    for _ in range(8):
+        slug = secrets.token_urlsafe(_SLUG_BYTES)
+        slug = sanitize_id(slug)
+        if slug and not exists(slug) and not pdf_exists(slug):
+            return slug
+    return sanitize_id(secrets.token_urlsafe(_SLUG_BYTES + 8))
+
+
+def extract_internal_record_id(payload: dict[str, Any]) -> str | None:
+    """MetSights / patient record id from JSON (not used in the public URL)."""
     patient = payload.get("patient") or {}
     meta = payload.get("report_metadata") or {}
     for candidate in (
@@ -34,27 +70,55 @@ def resolve_record_id(payload: dict[str, Any]) -> str:
         patient.get("profile_id"),
     ):
         if candidate and str(candidate).strip():
-            return sanitize_record_id(str(candidate))
-    return uuid.uuid4().hex
+            return str(candidate).strip()
+    return None
 
 
-def json_path(record_id: str) -> Path:
-    return store_dir() / f"{sanitize_record_id(record_id)}.json"
+def json_path(slug: str) -> Path:
+    return store_dir() / f"{sanitize_id(slug)}.json"
 
 
-def save_report_json(payload: dict[str, Any], *, record_id: str | None = None) -> str:
-    rid = sanitize_record_id(record_id or resolve_record_id(payload))
-    path = json_path(rid)
+def pdf_path(slug: str) -> Path:
+    return pdf_dir() / f"{sanitize_id(slug)}.pdf"
+
+
+def save_report_json(payload: dict[str, Any], *, slug: str | None = None) -> str:
+    """Save JSON under a secret slug. Generates a new slug when not provided."""
+    public_slug = sanitize_id(slug) if slug else new_public_slug()
+    path = json_path(public_slug)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    return rid
+    return public_slug
 
 
-def load_report_json(record_id: str) -> dict[str, Any] | None:
-    path = json_path(record_id)
+def load_report_json(slug: str) -> dict[str, Any] | None:
+    path = json_path(slug)
     if not path.is_file():
         return None
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def exists(record_id: str) -> bool:
-    return json_path(record_id).is_file()
+def save_report_pdf(slug: str, pdf_bytes: bytes) -> Path:
+    path = pdf_path(slug)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(pdf_bytes)
+    return path
+
+
+def load_report_pdf(slug: str) -> bytes | None:
+    path = pdf_path(slug)
+    if not path.is_file():
+        return None
+    return path.read_bytes()
+
+
+def pdf_exists(slug: str) -> bool:
+    return pdf_path(slug).is_file()
+
+
+def exists(slug: str) -> bool:
+    return json_path(slug).is_file()
+
+
+# Back-compat aliases (older call sites used record_id naming)
+sanitize_record_id = sanitize_id
+resolve_record_id = extract_internal_record_id

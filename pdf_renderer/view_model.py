@@ -9,7 +9,7 @@ from typing import Any
 from modules.bioai_report.pdf_renderer import config as pdf_config
 from modules.bioai_report.pdf_renderer.exceptions import PdfValidationError
 from modules.bioai_report.report_engine import config as engine_config
-from modules.bioai_report.report_engine.models.report import BioReport, DiseaseSection
+from modules.bioai_report.report_engine.models.report import BioReport, DiseaseSection, HealthTrends
 
 
 def _blank(value: Any) -> str:
@@ -145,6 +145,19 @@ class DiseaseCardVM:
 
 
 @dataclass
+class TrendPointVM:
+    date_label: str
+    score: float
+
+
+@dataclass
+class TrendSeriesVM:
+    disease_id: str
+    title: str
+    points: list[TrendPointVM]
+
+
+@dataclass
 class PdfViewModel:
     variant: str
     honorific: str
@@ -172,6 +185,10 @@ class PdfViewModel:
     generated_at: str | None
     risk_bands: list[dict[str, Any]] = field(default_factory=list)
     lifestyle_levels: list[str] = field(default_factory=list)
+    has_health_trends: bool = False
+    health_trend_series: list[TrendSeriesVM] = field(default_factory=list)
+    health_trends_page_range: str = ""
+    health_trends_chart_page_count: int = 0
 
     def to_dict(self) -> dict[str, Any]:
         payload = asdict(self)
@@ -296,6 +313,68 @@ def validate_view_model(report: BioReport, vm: PdfViewModel) -> None:
         raise PdfValidationError("; ".join(errors))
 
 
+def _format_trend_date(raw: str | None) -> str:
+    if not raw or not str(raw).strip():
+        return "—"
+    text = str(raw).strip()
+    for fmt in (
+        "%Y-%m-%dT%H:%M:%S.%f%z",
+        "%Y-%m-%dT%H:%M:%S%z",
+        "%Y-%m-%dT%H:%M:%SZ",
+        "%Y-%m-%d",
+        "%d %b %Y",
+        "%d %b '%y",
+    ):
+        try:
+            normalized = text.replace("Z", "+0000")
+            if fmt.endswith("%z") and len(normalized) > 5 and ":" == normalized[-3:-2]:
+                normalized = normalized[:-3] + normalized[-2:]
+            dt = datetime.strptime(normalized, fmt)
+            return f"{dt.day} {dt.strftime('%b')} '{dt.strftime('%y')}"
+        except ValueError:
+            continue
+    return text
+
+
+def _trend_series_from_report(
+    report: BioReport,
+    *,
+    variant: str,
+) -> list[TrendSeriesVM]:
+    """Build chart series when ``health_trends`` is present; otherwise empty."""
+    block: HealthTrends | None = report.health_trends
+    if block is None or not block.series:
+        return []
+
+    allowed = set(disease_order_for_variant(variant))
+    out: list[TrendSeriesVM] = []
+    for series in block.series:
+        disease_id = canonicalize_disease_id(series.disease_id)
+        if disease_id not in allowed:
+            continue
+        points_raw = list(series.points or [])
+        if len(points_raw) < 2:
+            continue
+        title = (
+            (series.title or "").strip()
+            or (
+                "PCOS"
+                if disease_id == "pcos_pcod"
+                else pdf_config.DISEASE_DISPLAY_NAMES.get(disease_id)
+            )
+            or disease_id.replace("_", " ").title()
+        )
+        points = [
+            TrendPointVM(
+                date_label=_format_trend_date(str(p.date)),
+                score=float(p.score),
+            )
+            for p in points_raw
+        ]
+        out.append(TrendSeriesVM(disease_id=disease_id, title=title, points=points))
+    return out
+
+
 def build_pdf_view_model(report: BioReport) -> PdfViewModel:
     """Assemble gender-aware PDF view-model and validate against BioReport."""
     patient = report.patient
@@ -349,11 +428,28 @@ def build_pdf_view_model(report: BioReport) -> PdfViewModel:
     if gender_label and gender_label != "—":
         gender_label = gender_label[:1].upper() + gender_label[1:].lower()
 
+    trend_series = _trend_series_from_report(report, variant=variant)
+    has_trends = bool(trend_series)
+    # Figma 373:97792 — up to 6 chart cards per page
+    charts_per_page = 6
+    trend_chart_pages = (
+        (len(trend_series) + charts_per_page - 1) // charts_per_page if has_trends else 0
+    )
+    # Divider (1) + chart pages when trends exist
+    trend_extra = (1 + trend_chart_pages) if has_trends else 0
+
     # Front matter: cover, welcome, TOC, index, health, glance, risks, divider (8),
-    # then disease details, then back cover. (Tests Covered + Risk Overview removed.)
-    page_count = 8 + len(disease_pages) + 1
+    # then disease details, optional Health Trends (divider + charts), then back cover.
+    page_count = 8 + len(disease_pages) + trend_extra + 1
     disease_start = 9
     disease_end = 8 + len(disease_pages)
+    trends_start = disease_end + 1 if has_trends else 0
+    trends_end = disease_end + trend_extra if has_trends else 0
+    trends_range = (
+        f"{trends_start}"
+        if trends_start == trends_end
+        else f"{trends_start}-{trends_end}"
+    )
 
     if variant == "female":
         tests1 = pdf_config.TESTS_COVERED_FEMALE_PAGE1
@@ -392,6 +488,10 @@ def build_pdf_view_model(report: BioReport) -> PdfViewModel:
             for name, lo, hi, color in pdf_config.RISK_BANDS
         ],
         lifestyle_levels=list(pdf_config.LIFESTYLE_METER_LEVELS),
+        has_health_trends=has_trends,
+        health_trend_series=trend_series,
+        health_trends_page_range=trends_range,
+        health_trends_chart_page_count=trend_chart_pages,
     )
     validate_view_model(report, vm)
     return vm

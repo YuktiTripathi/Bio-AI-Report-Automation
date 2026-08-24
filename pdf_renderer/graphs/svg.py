@@ -138,3 +138,93 @@ def disease_score_gauge_svg(
         font-size="12" font-weight="400" fill="#000000">/100</text>
 </svg>
 """.strip()
+
+
+# Figma Health Trends chart bands (373:97792) — score 0–100 bottom→top
+_TREND_BANDS = (
+    (0, 25, "#2E6B4E"),      # Healthy
+    (25, 50, "#A8B85C"),    # Increased
+    (50, 75, "#C47A3A"),    # High
+    (75, 100, "#8B2E2E"),   # Very High
+)
+
+
+def trend_line_chart_svg(
+    points: list[tuple[str, float]],
+    *,
+    width: int = 236,
+    height: int = 88,
+) -> str:
+    """Risk-score line chart with colored band background (Health Trends cards)."""
+    if not points:
+        points = [("—", 0.0)]
+
+    pad_l, pad_r, pad_t, pad_b = 22, 8, 4, 18
+    plot_w = max(1.0, width - pad_l - pad_r)
+    plot_h = max(1.0, height - pad_t - pad_b)
+
+    def y_for(score: float) -> float:
+        s = max(0.0, min(100.0, float(score)))
+        return pad_t + plot_h * (1.0 - s / 100.0)
+
+    n = len(points)
+    xs: list[float] = []
+    for i in range(n):
+        xs.append(pad_l + (plot_w * i / max(1, n - 1) if n > 1 else plot_w / 2))
+
+    band_rects = []
+    for lo, hi, color in _TREND_BANDS:
+        y_top = y_for(hi)
+        y_bot = y_for(lo)
+        band_rects.append(
+            f'<rect x="{pad_l:.1f}" y="{y_top:.1f}" width="{plot_w:.1f}" '
+            f'height="{max(0.5, y_bot - y_top):.1f}" fill="{color}" opacity="0.92"/>'
+        )
+
+    grid_labels = []
+    for score in (100, 75, 50, 25, 0):
+        y = y_for(score)
+        grid_labels.append(
+            f'<text x="{pad_l - 4:.1f}" y="{y + 2.5:.1f}" text-anchor="end" '
+            f'font-family="Inter, Helvetica, Arial, sans-serif" font-size="6.5" '
+            f'fill="#ffffff">{score}</text>'
+        )
+        if score in (0, 100):
+            grid_labels.append(
+                f'<line x1="{pad_l:.1f}" y1="{y:.1f}" x2="{pad_l + plot_w:.1f}" '
+                f'y2="{y:.1f}" stroke="#ffffff" stroke-opacity="0.25" stroke-width="0.5"/>'
+            )
+
+    poly = " ".join(f"{xs[i]:.1f},{y_for(points[i][1]):.1f}" for i in range(n))
+    dots = []
+    date_labels = []
+    for i, (label, score) in enumerate(points):
+        x, y = xs[i], y_for(score)
+        dots.append(
+            f'<line x1="{x:.1f}" y1="{pad_t:.1f}" x2="{x:.1f}" y2="{pad_t + plot_h:.1f}" '
+            f'stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6"/>'
+            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.4" fill="#F5E6A3" stroke="#063533" stroke-width="0.6"/>'
+        )
+        date_labels.append(
+            f'<text x="{x:.1f}" y="{height - 3:.1f}" text-anchor="middle" '
+            f'font-family="Inter, Helvetica, Arial, sans-serif" font-size="6" fill="#ffffff">{label}</text>'
+        )
+
+    risk_label = (
+        f'<text x="7" y="{pad_t + plot_h / 2:.1f}" text-anchor="middle" '
+        f'font-family="Inter, Helvetica, Arial, sans-serif" font-size="6" fill="#ffffff" '
+        f'transform="rotate(-90 7 {pad_t + plot_h / 2:.1f})">Risk Scores</text>'
+    )
+
+    return f"""
+<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Health trend chart">
+  {''.join(band_rects)}
+  {''.join(grid_labels)}
+  {risk_label}
+  <polyline fill="none" stroke="#F5E6A3" stroke-width="1.4"
+            stroke-linejoin="round" stroke-linecap="round" points="{poly}"/>
+  {''.join(dots)}
+  {''.join(date_labels)}
+</svg>
+""".strip()

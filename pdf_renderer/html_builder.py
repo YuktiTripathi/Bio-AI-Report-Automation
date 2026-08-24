@@ -12,6 +12,7 @@ from modules.bioai_report.pdf_renderer.graphs.svg import (
     disease_score_gauge_svg,
     percentile_marker_pct,
     score_ring_svg,
+    trend_line_chart_svg,
 )
 from modules.bioai_report.pdf_renderer.view_model import PdfViewModel, risk_color
 
@@ -376,6 +377,39 @@ def _disease_detail_pages(vm: PdfViewModel) -> list[dict[str, object]]:
     return pages
 
 
+_TRENDS_PER_PAGE = 6
+
+
+def _health_trends_pages(vm: PdfViewModel) -> list[dict[str, object]]:
+    """Chunk trend series into Figma-style 6-card chart pages (after disease section)."""
+    if not vm.has_health_trends or not vm.health_trend_series:
+        return []
+    disease_end = 8 + len(vm.disease_pages)
+    # page disease_end+1 is the Health Trends divider
+    first_chart_page = disease_end + 2
+    pages: list[dict[str, object]] = []
+    series = list(vm.health_trend_series)
+    for page_index in range(0, len(series), _TRENDS_PER_PAGE):
+        chunk = series[page_index : page_index + _TRENDS_PER_PAGE]
+        cards = []
+        for item in chunk:
+            pts = [(p.date_label, float(p.score)) for p in item.points]
+            cards.append(
+                {
+                    "disease_id": item.disease_id,
+                    "title": item.title,
+                    "chart_svg": trend_line_chart_svg(pts),
+                }
+            )
+        pages.append(
+            {
+                "page_no": first_chart_page + (page_index // _TRENDS_PER_PAGE),
+                "cards": cards,
+            }
+        )
+    return pages
+
+
 def build_report_html(
     vm: PdfViewModel,
     *,
@@ -426,6 +460,18 @@ def build_report_html(
             "dynamic_pages": True,
         },
     ]
+    if vm.has_health_trends:
+        toc_rows.append(
+            {
+                "id": "health_trends",
+                "sr": f"{len(toc_rows) + 1:02d}",
+                "section": "Health Trends",
+                "page": vm.health_trends_page_range,
+                "dynamic_pages": True,
+            }
+        )
+    disease_end = 8 + len(vm.disease_pages)
+    ht_divider_page_no = disease_end + 1 if vm.has_health_trends else 0
     assets = page_asset_urls(vm.variant, for_http=for_http)
     template = _env().get_template("report.html")
     return template.render(
@@ -440,6 +486,10 @@ def build_report_html(
         risk_summary_css_href=_css_href("risk_summary.css", for_http=for_http),
         disease_divider_css_href=_css_href("disease_divider.css", for_http=for_http),
         disease_detail_css_href=_css_href("disease_detail.css", for_http=for_http),
+        health_trends_divider_css_href=_css_href(
+            "health_trends_divider.css", for_http=for_http
+        ),
+        health_trends_css_href=_css_href("health_trends.css", for_http=for_http),
         back_cover_css_href=_css_href("back_cover.css", for_http=for_http),
         status_color=risk_color(vm.overall_status),
         assets=assets,
@@ -447,6 +497,8 @@ def build_report_html(
         aag=_at_a_glance_context(vm),
         rs=_risk_summary_context(vm),
         disease_detail_pages=_disease_detail_pages(vm),
+        health_trends_pages=_health_trends_pages(vm),
+        ht_divider_page_no=ht_divider_page_no,
         toc_rows=toc_rows,
         preview_page=page,
         for_http=for_http,

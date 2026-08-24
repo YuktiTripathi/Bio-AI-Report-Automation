@@ -326,6 +326,27 @@ def back_cover_asset_urls(*, for_http: bool = False) -> dict[str, str]:
     }
 
 
+def health_trends_asset_urls(*, for_http: bool = False) -> dict[str, str]:
+    """Return Health Trends divider + chart page asset URLs (Figma 373:97955 / 373:97792)."""
+    base_dir = Path(pdf_config.STATIC_DIR) / "assets" / "health_trends"
+
+    def resolve(name: str) -> str:
+        path = base_dir / name
+        if for_http:
+            return f"/static/assets/health_trends/{name}"
+        return path.resolve().as_uri()
+
+    return {
+        "ht_bg": resolve("green_bg.png"),
+        "ht_page_bg": resolve("page_bg.png"),
+        "ht_deco": resolve("deco.svg"),
+        "ht_circles": resolve("circles.png"),
+        "ht_title_line": resolve("title_line.svg"),
+        "ht_metflux": resolve("metflux_logo.png"),
+        "ht_mark": resolve("brand_mark.png"),
+    }
+
+
 def page_asset_urls(variant: str = "male", *, for_http: bool = False) -> dict[str, str]:
     """Merged asset map for all implemented pages."""
     return {
@@ -338,5 +359,6 @@ def page_asset_urls(variant: str = "male", *, for_http: bool = False) -> dict[st
         **risk_summary_asset_urls(for_http=for_http),
         **disease_divider_asset_urls(for_http=for_http),
         **disease_detail_asset_urls(for_http=for_http),
+        **health_trends_asset_urls(for_http=for_http),
         **back_cover_asset_urls(for_http=for_http),
     }

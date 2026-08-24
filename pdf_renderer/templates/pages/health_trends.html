@@ -1,0 +1,59 @@
+{# Health Trends charts — Figma node 373:97792 (up to 6 cards / page) #}
+<section
+  class="page ht-figma"
+  data-template="HealthTrends"
+  data-page="{{ page.page_no }}"
+  data-node-id="373:97792"
+>
+  <div class="ht-figma__bg" aria-hidden="true">
+    <img class="ht-figma__bg-img" src="{{ assets.ht_bg }}" alt="" />
+  </div>
+
+  {# Header — Figma 373:97927 / 373:97928 / 373:97929 #}
+  <h1 class="ht-figma__title">Health Trends</h1>
+  <img class="ht-figma__title-line" src="{{ assets.ht_title_line }}" alt="" aria-hidden="true" />
+  <p class="ht-figma__subtitle">Monitor Your Health Journey Through Visual Trends</p>
+
+  <div class="ht-figma__grid">
+    {% for card in page.cards %}
+    <article class="ht-figma__card" data-disease-id="{{ card.disease_id }}">
+      <h2 class="ht-figma__card-title">{{ card.title }}</h2>
+      <div class="ht-figma__chart">
+        {{ card.chart_svg | safe }}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <div class="ht-figma__legend" aria-hidden="true">
+    <span class="ht-figma__legend-item">
+      <i class="ht-figma__dot ht-figma__dot--healthy"></i>
+      <span class="ht-figma__legend-text">Healthy<br />(0-25)</span>
+    </span>
+    <span class="ht-figma__legend-item">
+      <i class="ht-figma__dot ht-figma__dot--increased"></i>
+      <span class="ht-figma__legend-text">Increased Risk<br />(26-50)</span>
+    </span>
+    <span class="ht-figma__legend-item">
+      <i class="ht-figma__dot ht-figma__dot--high"></i>
+      <span class="ht-figma__legend-text">High Risk<br />(51-75)</span>
+    </span>
+    <span class="ht-figma__legend-item">
+      <i class="ht-figma__dot ht-figma__dot--very-high"></i>
+      <span class="ht-figma__legend-text">Very High Risk<br />(76-100)</span>
+    </span>
+  </div>
+
+  <div class="ht-figma__footer">
+    <div class="ht-figma__footer-inner">
+      <div class="ht-figma__powered">
+        <span>Poweredby</span>
+        <img src="{{ assets.ht_metflux }}" alt="MetFlux Research" />
+      </div>
+      <p class="ht-figma__page-no">{{ "%02d"|format(page.page_no) }}</p>
+      <div class="ht-figma__footer-right">
+        <img class="ht-figma__mark" src="{{ assets.ht_mark }}" alt="Metsights" />
+      </div>
+    </div>
+  </div>
+</section>

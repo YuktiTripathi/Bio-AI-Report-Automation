@@ -1,22 +1,24 @@
 #!/usr/bin/env python3
-"""Permanent report links: store JSON, regenerate PDF on each open/download.
+"""Permanent report links: store JSON + PDF once, serve via secret slug URL.
 
-Scope:
-  - You receive BioReport JSON (fetch/modify is elsewhere)
-  - POST stores JSON and returns a permanent link
-  - GET serves a PDF softcopy (view + download); PDF is not kept on disk
+Public URL shape:
+  https://bio-ai-reports.supershyft.com/r/{secret_slug}
+
+The MetSights record_id stays inside the JSON / API response for tracking;
+it is never used as the public path.
 
 Usage (from repo root):
     source .venv/bin/activate
     unset PLAYWRIGHT_BROWSERS_PATH
-    export BIOAI_PUBLIC_BASE_URL=http://127.0.0.1:8790   # later: https://reports.yourdomain.com
+    export BIOAI_PUBLIC_BASE_URL=http://127.0.0.1:8790
+    # prod: export BIOAI_PUBLIC_BASE_URL=https://bio-ai-reports.supershyft.com
     PYTHONPATH=. python test_engine/report_link_server.py
 
 API:
-    POST /api/reports          JSON body → { record_id, url, patient, variant }
-    GET  /r/{record_id}        application/pdf (inline; browser can download)
-    GET  /r/{record_id}?dl=1   force download
-    GET  /                     small status page
+    POST /api/reports          JSON body → { slug, url, record_id, patient, variant }
+    GET  /r/{slug}             application/pdf (inline)
+    GET  /r/{slug}?dl=1        force download
+    GET  /                     status page
 """
 
 from __future__ import annotations
@@ -41,9 +43,14 @@ from modules.bioai_report.pdf_renderer.exceptions import (  # noqa: E402
     PdfValidationError,
 )
 from modules.bioai_report.pdf_renderer.report_store import (  # noqa: E402
-    exists as report_exists,
+    extract_internal_record_id,
     load_report_json,
+    load_report_pdf,
+    pdf_dir,
+    pdf_exists,
     save_report_json,
+    save_report_pdf,
+    store_dir,
 )
 from modules.bioai_report.pdf_renderer.service import PdfRenderService  # noqa: E402
 from modules.bioai_report.pdf_renderer.view_model import resolve_gender_variant  # noqa: E402
@@ -53,11 +60,11 @@ HOST = os.environ.get("BIOAI_LINK_HOST", "127.0.0.1")
 PORT = int(os.environ.get("BIOAI_LINK_PORT", "8790"))
 PUBLIC_BASE = os.environ.get("BIOAI_PUBLIC_BASE_URL", f"http://{HOST}:{PORT}").rstrip("/")
 
-_RECORD_RE = re.compile(r"^/r/([A-Za-z0-9._-]+)/?$")
+_SLUG_RE = re.compile(r"^/r/([A-Za-z0-9._-]+)/?$")
 
 
-def _public_url(record_id: str) -> str:
-    return f"{PUBLIC_BASE}/r/{quote(record_id)}"
+def _public_url(slug: str) -> str:
+    return f"{PUBLIC_BASE}/r/{quote(slug)}"
 
 
 def _safe_filename(name: str) -> str:
@@ -80,7 +87,7 @@ class ReportLinkHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         if parsed.path in {"/", "/health"}:
             return self._health()
-        match = _RECORD_RE.match(parsed.path)
+        match = _SLUG_RE.match(parsed.path)
         if match:
             force_dl = (parse_qs(parsed.query).get("dl") or ["0"])[0] in {"1", "true", "yes"}
             return self._serve_pdf(match.group(1), force_download=force_dl)
@@ -96,20 +103,28 @@ class ReportLinkHandler(BaseHTTPRequestHandler):
             payload = json.loads(raw.decode("utf-8"))
             if not isinstance(payload, dict):
                 raise ValueError("JSON body must be an object")
-            # Validate shape early (same contract as PDF renderer).
-            BioReport.model_validate(payload)
-            record_id = save_report_json(payload)
+            report = BioReport.model_validate(payload)
+            internal_id = extract_internal_record_id(payload)
+            slug = save_report_json(payload)  # generates secret slug
+            pdf_bytes = PdfRenderService().render_pdf(report)
+            save_report_pdf(slug, pdf_bytes)
             name, variant = _patient_bits(payload)
             body = {
-                "record_id": record_id,
-                "url": _public_url(record_id),
+                "slug": slug,
+                "url": _public_url(slug),
+                "record_id": internal_id,
                 "patient": name,
                 "variant": variant,
-                "note": "Permanent link. PDF is generated on each open; only JSON is stored.",
+                "note": (
+                    "Permanent secret link. PDF stored once; "
+                    "public path uses slug only (not record_id)."
+                ),
             }
             return self._json(200, body)
         except (json.JSONDecodeError, ValueError, PdfValidationError) as exc:
             return self._text(400, str(exc))
+        except (PdfRenderDependencyError, PdfRendererError) as exc:
+            return self._text(503, f"PDF render failed: {exc}")
         except Exception as exc:  # noqa: BLE001
             return self._text(500, f"Failed to register report: {exc}")
 
@@ -122,11 +137,11 @@ class ReportLinkHandler(BaseHTTPRequestHandler):
   li{{margin:8px 0}}
 </style></head><body>
 <h1>Bio-AI report links</h1>
-<p>Store JSON, open a permanent PDF link anytime (regenerated from JSON).</p>
+<p>Register once: we store the PDF and return a permanent secret link.</p>
 <ul>
-  <li><code>POST {PUBLIC_BASE}/api/reports</code> — body: BioReport JSON → returns <code>url</code></li>
-  <li><code>GET {PUBLIC_BASE}/r/&lt;record_id&gt;</code> — view/download PDF</li>
-  <li><code>GET …/r/&lt;record_id&gt;?dl=1</code> — force download</li>
+  <li><code>POST {PUBLIC_BASE}/api/reports</code> — BioReport JSON → <code>url</code> with secret slug</li>
+  <li><code>GET {PUBLIC_BASE}/r/&lt;slug&gt;</code> — view stored PDF</li>
+  <li><code>GET …/r/&lt;slug&gt;?dl=1</code> — force download</li>
 </ul>
 </body></html>"""
         data = html.encode("utf-8")
@@ -136,29 +151,26 @@ class ReportLinkHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
-    def _serve_pdf(self, record_id: str, *, force_download: bool) -> None:
-        payload = load_report_json(record_id)
-        if payload is None:
-            return self._text(404, f"Unknown report: {record_id}")
-        try:
-            report = BioReport.model_validate(payload)
-            pdf_bytes = PdfRenderService().render_pdf(report)
-            name, _variant = _patient_bits(payload)
-            filename = _safe_filename(name)
-        except (PdfValidationError, PdfRenderDependencyError, PdfRendererError) as exc:
-            return self._text(400, str(exc))
-        except Exception as exc:  # noqa: BLE001
-            return self._text(500, f"PDF render failed: {exc}")
+    def _serve_pdf(self, slug: str, *, force_download: bool) -> None:
+        pdf_bytes = load_report_pdf(slug)
+        if pdf_bytes is None:
+            if not pdf_exists(slug) and not load_report_json(slug):
+                return self._text(404, "Unknown report")
+            return self._text(404, "PDF missing for report")
+
+        payload = load_report_json(slug) or {}
+        name, _variant = _patient_bits(payload) if payload else ("report", "male")
+        filename = _safe_filename(name)
 
         disposition = "attachment" if force_download else "inline"
         self.send_response(200)
         self.send_header("Content-Type", "application/pdf")
         self.send_header(
             "Content-Disposition",
-            f"{disposition}; filename=\"{filename}\"; filename*=UTF-8''{quote(filename)}",
+            f'{disposition}; filename="{filename}"; filename*=UTF-8\'\'{quote(filename)}',
         )
         self.send_header("Content-Length", str(len(pdf_bytes)))
-        self.send_header("Cache-Control", "private, no-store")
+        self.send_header("Cache-Control", "private, max-age=86400")
         self.end_headers()
         self.wfile.write(pdf_bytes)
 
@@ -180,12 +192,10 @@ class ReportLinkHandler(BaseHTTPRequestHandler):
 
 
 def main() -> int:
-    # Touch store dir early so operators see where JSON lands.
-    from modules.bioai_report.pdf_renderer.report_store import store_dir
-
-    print(f"Store directory: {store_dir()}")
-    print(f"Public base URL: {PUBLIC_BASE}")
-    print(f"Listening:       http://{HOST}:{PORT}/")
+    print(f"JSON store:  {store_dir()}")
+    print(f"PDF store:   {pdf_dir()}")
+    print(f"Public base: {PUBLIC_BASE}")
+    print(f"Listening:   http://{HOST}:{PORT}/")
     server = ThreadingHTTPServer((HOST, PORT), ReportLinkHandler)
     try:
         server.serve_forever()
