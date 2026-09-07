@@ -140,26 +140,44 @@ def disease_score_gauge_svg(
 """.strip()
 
 
-# Figma Health Trends chart bands (373:97792) — score 0–100 bottom→top
+# Figma Health Trends 373:97792 — band fills use 50% opacity over dark card.
 _TREND_BANDS = (
-    (0, 25, "#2E6B4E"),      # Healthy
-    (25, 50, "#A8B85C"),    # Increased
-    (50, 75, "#C47A3A"),    # High
-    (75, 100, "#8B2E2E"),   # Very High
+    (0, 25, "#12673F"),    # Healthy
+    (25, 50, "#F8D232"),   # Increased Risk
+    (50, 75, "#FC943A"),   # High Risk
+    (75, 100, "#CC203B"),  # Very High Risk
 )
+_TREND_BAND_OPACITY = 0.5
+
+# Dot fill matches risk band (Figma ellipses 373:97823 / 373:978xx).
+_TREND_DOT_COLORS = (
+    (25, "#12673F"),
+    (50, "#F8D232"),
+    (75, "#FC943A"),
+    (100, "#CC203B"),
+)
+
+
+def _trend_dot_color(score: float) -> str:
+    s = max(0.0, min(100.0, float(score)))
+    for hi, color in _TREND_DOT_COLORS:
+        if s <= hi:
+            return color
+    return _TREND_DOT_COLORS[-1][1]
 
 
 def trend_line_chart_svg(
     points: list[tuple[str, float]],
     *,
     width: int = 236,
-    height: int = 88,
+    height: int = 102,
 ) -> str:
-    """Risk-score line chart with colored band background (Health Trends cards)."""
+    """Risk-score line chart matching Figma Health Trends cards (373:97792)."""
     if not points:
         points = [("—", 0.0)]
 
-    pad_l, pad_r, pad_t, pad_b = 22, 8, 4, 18
+    # Layout mirrors Figma widget: y-labels | plot (204×67) | date labels under guides.
+    pad_l, pad_r, pad_t, pad_b = 28, 6, 4, 16
     plot_w = max(1.0, width - pad_l - pad_r)
     plot_h = max(1.0, height - pad_t - pad_b)
 
@@ -168,9 +186,14 @@ def trend_line_chart_svg(
         return pad_t + plot_h * (1.0 - s / 100.0)
 
     n = len(points)
+    # Inset points slightly from plot edges (Figma years column px-[24px]).
+    inset = min(24.0, plot_w * 0.12)
     xs: list[float] = []
     for i in range(n):
-        xs.append(pad_l + (plot_w * i / max(1, n - 1) if n > 1 else plot_w / 2))
+        if n == 1:
+            xs.append(pad_l + plot_w / 2)
+        else:
+            xs.append(pad_l + inset + ((plot_w - 2 * inset) * i / (n - 1)))
 
     band_rects = []
     for lo, hi, color in _TREND_BANDS:
@@ -178,21 +201,22 @@ def trend_line_chart_svg(
         y_bot = y_for(lo)
         band_rects.append(
             f'<rect x="{pad_l:.1f}" y="{y_top:.1f}" width="{plot_w:.1f}" '
-            f'height="{max(0.5, y_bot - y_top):.1f}" fill="{color}" opacity="0.92"/>'
+            f'height="{max(0.5, y_bot - y_top):.1f}" fill="{color}" '
+            f'fill-opacity="{_TREND_BAND_OPACITY}"/>'
         )
 
     grid_labels = []
     for score in (100, 75, 50, 25, 0):
         y = y_for(score)
         grid_labels.append(
-            f'<text x="{pad_l - 4:.1f}" y="{y + 2.5:.1f}" text-anchor="end" '
-            f'font-family="Inter, Helvetica, Arial, sans-serif" font-size="6.5" '
-            f'fill="#ffffff">{score}</text>'
+            f'<text x="{pad_l - 5:.1f}" y="{y + 2.2:.1f}" text-anchor="end" '
+            f'font-family="Inter, Helvetica, Arial, sans-serif" font-size="6.3" '
+            f'font-weight="500" fill="#ffffff" letter-spacing="-0.16">{score}</text>'
         )
         if score in (0, 100):
             grid_labels.append(
                 f'<line x1="{pad_l:.1f}" y1="{y:.1f}" x2="{pad_l + plot_w:.1f}" '
-                f'y2="{y:.1f}" stroke="#ffffff" stroke-opacity="0.25" stroke-width="0.5"/>'
+                f'y2="{y:.1f}" stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.55"/>'
             )
 
     poly = " ".join(f"{xs[i]:.1f},{y_for(points[i][1]):.1f}" for i in range(n))
@@ -200,20 +224,24 @@ def trend_line_chart_svg(
     date_labels = []
     for i, (label, score) in enumerate(points):
         x, y = xs[i], y_for(score)
+        # Vertical guide from top of plot through the point to baseline.
         dots.append(
             f'<line x1="{x:.1f}" y1="{pad_t:.1f}" x2="{x:.1f}" y2="{pad_t + plot_h:.1f}" '
-            f'stroke="#ffffff" stroke-opacity="0.35" stroke-width="0.6"/>'
-            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.4" fill="#F5E6A3" stroke="#063533" stroke-width="0.6"/>'
+            f'stroke="#ffffff" stroke-opacity="0.45" stroke-width="0.7" stroke-linecap="round"/>'
+            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.1" fill="{_trend_dot_color(score)}"/>'
         )
         date_labels.append(
-            f'<text x="{x:.1f}" y="{height - 3:.1f}" text-anchor="middle" '
-            f'font-family="Inter, Helvetica, Arial, sans-serif" font-size="6" fill="#ffffff">{label}</text>'
+            f'<text x="{x:.1f}" y="{height - 2:.1f}" text-anchor="middle" '
+            f'font-family="Inter, Helvetica, Arial, sans-serif" font-size="6.3" '
+            f'font-weight="500" fill="#ffffff" letter-spacing="-0.16">{label}</text>'
         )
 
+    risk_cy = pad_t + plot_h / 2
     risk_label = (
-        f'<text x="7" y="{pad_t + plot_h / 2:.1f}" text-anchor="middle" '
-        f'font-family="Inter, Helvetica, Arial, sans-serif" font-size="6" fill="#ffffff" '
-        f'transform="rotate(-90 7 {pad_t + plot_h / 2:.1f})">Risk Scores</text>'
+        f'<text x="8" y="{risk_cy:.1f}" text-anchor="middle" '
+        f'font-family="Inter, Helvetica, Arial, sans-serif" font-size="6.3" '
+        f'font-weight="500" fill="#ffffff" letter-spacing="-0.16" '
+        f'transform="rotate(-90 8 {risk_cy:.1f})">Risk Scores</text>'
     )
 
     return f"""
@@ -222,7 +250,7 @@ def trend_line_chart_svg(
   {''.join(band_rects)}
   {''.join(grid_labels)}
   {risk_label}
-  <polyline fill="none" stroke="#F5E6A3" stroke-width="1.4"
+  <polyline fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="0.7"
             stroke-linejoin="round" stroke-linecap="round" points="{poly}"/>
   {''.join(dots)}
   {''.join(date_labels)}

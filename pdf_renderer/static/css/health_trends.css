@@ -78,6 +78,7 @@
   white-space: nowrap;
 }
 
+/* Figma 373:97794 — 520×559 @ 37/117, gap 14×32 */
 .ht-figma__grid {
   position: absolute;
   left: 37px;
@@ -85,25 +86,33 @@
   z-index: 2;
   display: grid;
   grid-template-columns: 253px 253px;
-  grid-template-rows: repeat(3, 141px);
-  gap: 18px 14px;
+  grid-template-rows: repeat(3, 165px);
+  column-gap: 14px;
+  row-gap: 32px;
   width: 520px;
+  height: 559px;
   box-sizing: border-box;
+  align-content: start;
 }
 
+/* Figma Widget — border #d0d0d0, radius ~6.6, py 16 / pl 16.8 */
 .ht-figma__card {
   width: 253px;
-  height: 141px;
+  height: 165px;
   margin: 0;
-  padding: 12px 8px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  border-radius: 8px;
-  background: rgba(6, 28, 26, 0.25);
+  padding: 14px 10px 10px 14px;
+  border: 1.1px solid #d0d0d0;
+  border-radius: 6.6px;
+  background: transparent;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
 }
 
 .ht-figma__card-title {
-  margin: 0 0 6px;
+  margin: 0;
   text-align: center;
   font-family: Inter, "Helvetica Neue", Arial, sans-serif;
   font-size: 11px;
@@ -111,37 +120,40 @@
   line-height: 1.1;
   letter-spacing: -0.11px;
   color: #ffffff;
+  flex: none;
 }
 
 .ht-figma__chart {
   width: 236px;
-  height: 88px;
+  height: 102px;
   margin: 0 auto;
+  flex: none;
 }
 
 .ht-figma__chart svg {
   display: block;
   width: 236px;
-  height: 88px;
+  height: 102px;
 }
 
+/* Figma 373:97931 — legend @ top ~715 */
 .ht-figma__legend {
   position: absolute;
   left: 50%;
-  bottom: 78px;
+  top: 715px;
   transform: translateX(-50%);
   z-index: 2;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  gap: 22px;
+  gap: 14.5px;
   white-space: nowrap;
 }
 
 .ht-figma__legend-item {
   display: inline-flex;
   align-items: flex-start;
-  gap: 6px;
+  gap: 5.3px;
   color: #ffffff;
 }
 
@@ -149,21 +161,22 @@
   font-family: Inter, "Helvetica Neue", Arial, sans-serif;
   font-size: 8.6px;
   font-weight: 400;
-  line-height: 1.15;
+  line-height: 1.2;
   text-align: left;
 }
 
 .ht-figma__dot {
   display: inline-block;
-  width: 11px;
-  height: 11px;
-  margin-top: 1px;
+  width: 12px;
+  height: 12px;
+  margin-top: 0;
   border-radius: 50%;
   flex: none;
 }
 
-.ht-figma__dot--healthy { background: #2e6b4e; }
-.ht-figma__dot--increased { background: #f8d232; }
+/* Figma legend vectors 373:97934–97951 */
+.ht-figma__dot--healthy { background: #12673f; }
+.ht-figma__dot--increased { background: #dac15a; }
 .ht-figma__dot--high { background: #eaa546; }
 .ht-figma__dot--very-high { background: #c6203b; }
 
