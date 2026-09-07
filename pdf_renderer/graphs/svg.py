@@ -157,12 +157,12 @@ _TREND_DOT_COLORS = (
     (100, "#CC203B"),
 )
 
-# Vertical + horizontal guides — Figma Line stroke #F1F1F1.
-_TREND_GUIDE_STROKE = "#F1F1F1"
-_TREND_GUIDE_WIDTH = 1.15
+# Guides as filled rects — thin <line> strokes often vanish in Chromium PDF print.
+_TREND_GUIDE_FILL = "#F1F1F1"
+_TREND_GUIDE_THICK = 1.4
 _TREND_LINE_STROKE = "#FFFFFF"
-_TREND_LINE_OPACITY = 0.55
-_TREND_LINE_WIDTH = 0.9
+_TREND_LINE_OPACITY = 0.65
+_TREND_LINE_WIDTH = 1.2
 
 
 def _trend_dot_color(score: float) -> str:
@@ -171,6 +171,20 @@ def _trend_dot_color(score: float) -> str:
         if s <= hi:
             return color
     return _TREND_DOT_COLORS[-1][1]
+
+
+def _h_guide(x0: float, x1: float, y: float, thick: float = _TREND_GUIDE_THICK) -> str:
+    return (
+        f'<rect x="{x0:.1f}" y="{y - thick / 2:.2f}" width="{max(0.5, x1 - x0):.1f}" '
+        f'height="{thick:.2f}" fill="{_TREND_GUIDE_FILL}"/>'
+    )
+
+
+def _v_guide(x: float, y0: float, y1: float, thick: float = _TREND_GUIDE_THICK) -> str:
+    return (
+        f'<rect x="{x - thick / 2:.2f}" y="{y0:.1f}" width="{thick:.2f}" '
+        f'height="{max(0.5, y1 - y0):.1f}" fill="{_TREND_GUIDE_FILL}"/>'
+    )
 
 
 def trend_line_chart_svg(
@@ -208,7 +222,7 @@ def trend_line_chart_svg(
 
     parts: list[str] = []
 
-    # 1) Equal-height risk bands.
+    # 1) Equal-height risk bands (solid Figma colors).
     for lo, hi, color in _TREND_BANDS:
         y_top = y_for(hi)
         y_bot = y_for(lo)
@@ -217,14 +231,9 @@ def trend_line_chart_svg(
             f'height="{max(0.5, y_bot - y_top):.1f}" fill="{color}"/>'
         )
 
-    # 2) Horizontal guides at 100 and 0.
-    for score in (100, 0):
-        y = y_for(score)
-        parts.append(
-            f'<line x1="{plot_x0:.1f}" y1="{y:.1f}" x2="{plot_x1:.1f}" y2="{y:.1f}" '
-            f'stroke="{_TREND_GUIDE_STROKE}" stroke-width="{_TREND_GUIDE_WIDTH}" '
-            f'stroke-linecap="square"/>'
-        )
+    # 2) Horizontal guides at 100 and 0 (filled rects survive PDF print).
+    parts.append(_h_guide(plot_x0, plot_x1, y_for(100)))
+    parts.append(_h_guide(plot_x0, plot_x1, y_for(0)))
 
     # 3) Y-axis labels.
     for score in (100, 75, 50, 25, 0):
@@ -235,20 +244,17 @@ def trend_line_chart_svg(
             f'font-weight="500" fill="#ffffff" letter-spacing="-0.16">{score}</text>'
         )
 
-    # 4) Vertical straight guides — full band height, one per date/point.
+    # 4) Vertical straight guides — one per date/point (filled rects).
     for x in xs:
-        parts.append(
-            f'<line x1="{x:.1f}" y1="{plot_y0:.1f}" x2="{x:.1f}" y2="{plot_y1:.1f}" '
-            f'stroke="{_TREND_GUIDE_STROKE}" stroke-width="{_TREND_GUIDE_WIDTH}" '
-            f'stroke-linecap="square"/>'
-        )
+        parts.append(_v_guide(x, plot_y0, plot_y1))
 
     # 5) Trend line.
     poly = " ".join(f"{xs[i]:.1f},{y_for(points[i][1]):.1f}" for i in range(n))
     parts.append(
         f'<polyline fill="none" stroke="{_TREND_LINE_STROKE}" '
         f'stroke-opacity="{_TREND_LINE_OPACITY}" stroke-width="{_TREND_LINE_WIDTH}" '
-        f'stroke-linejoin="round" stroke-linecap="round" points="{poly}"/>'
+        f'stroke-linejoin="round" stroke-linecap="round" '
+        f'vector-effect="non-scaling-stroke" points="{poly}"/>'
     )
 
     # 6) Dots + date labels.
