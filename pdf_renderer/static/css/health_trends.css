@@ -100,14 +100,15 @@
   width: 253px;
   height: 165px;
   margin: 0;
-  padding: 14px 10px 10px 14px;
+  padding: 10px 12px;
   border: 1.1px solid #d0d0d0;
   border-radius: 6.6px;
   background: transparent;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -124,16 +125,16 @@
 }
 
 .ht-figma__chart {
-  width: 236px;
-  height: 102px;
+  width: 227px;
+  height: 98px;
   margin: 0 auto;
   flex: none;
 }
 
 .ht-figma__chart svg {
   display: block;
-  width: 236px;
-  height: 102px;
+  width: 227px;
+  height: 98px;
 }
 
 /* Figma 373:97931 — legend @ top ~715 */

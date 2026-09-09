@@ -141,25 +141,27 @@ def disease_score_gauge_svg(
 
 
 # Figma Health Trends widget 373:97826 / page 373:97792.
-# Use solid Figma RGB fills — 50% opacity composites too muddy in Chromium PDF.
+# Exact Figma band fills: rgba(..., 0.5) over the dark transparent card.
 _TREND_BANDS = (
-    (0, 25, "#12673F"),    # Healthy — rgba(18,103,63,*)
-    (25, 50, "#F8D232"),   # Increased — rgba(248,210,50,*)
-    (50, 75, "#FC943A"),   # High — rgba(252,148,58,*)
-    (75, 100, "#CC203B"),  # Very High — rgba(204,32,59,*)
+    (0, 25, "#12673F"),    # Healthy — rgba(18,103,63,0.5)
+    (25, 50, "#F8D232"),   # Increased — rgba(248,210,50,0.5)
+    (50, 75, "#FC943A"),   # High — rgba(252,148,58,0.5)
+    (75, 100, "#CC203B"),  # Very High — rgba(204,32,59,0.5)
 )
+_TREND_BAND_OPACITY = 0.5
 
-# Dot fills from Figma ellipses (band-matched).
+# Dot fills from Figma legend ellipses (opaque).
 _TREND_DOT_COLORS = (
     (25, "#12673F"),
-    (50, "#F8D232"),
-    (75, "#FC943A"),
-    (100, "#CC203B"),
+    (50, "#DAC15A"),
+    (75, "#EAA546"),
+    (100, "#C6203B"),
 )
 
 # Guides as filled rects — thin <line> strokes often vanish in Chromium PDF print.
 _TREND_GUIDE_FILL = "#F1F1F1"
 _TREND_GUIDE_THICK = 1.4
+_TREND_HORIZONTAL_GUIDE_THICK = 0.6
 _TREND_LINE_STROKE = "#FFFFFF"
 _TREND_LINE_OPACITY = 0.65
 _TREND_LINE_WIDTH = 1.2
@@ -173,7 +175,17 @@ def _trend_dot_color(score: float) -> str:
     return _TREND_DOT_COLORS[-1][1]
 
 
-def _h_guide(x0: float, x1: float, y: float, thick: float = _TREND_GUIDE_THICK) -> str:
+def _format_trend_score(score: float) -> str:
+    s = float(score)
+    return str(int(round(s))) if abs(s - round(s)) < 1e-6 else f"{s:.1f}"
+
+
+def _h_guide(
+    x0: float,
+    x1: float,
+    y: float,
+    thick: float = _TREND_HORIZONTAL_GUIDE_THICK,
+) -> str:
     return (
         f'<rect x="{x0:.1f}" y="{y - thick / 2:.2f}" width="{max(0.5, x1 - x0):.1f}" '
         f'height="{thick:.2f}" fill="{_TREND_GUIDE_FILL}"/>'
@@ -222,13 +234,14 @@ def trend_line_chart_svg(
 
     parts: list[str] = []
 
-    # 1) Equal-height risk bands (solid Figma colors).
+    # 1) Equal-height risk bands (Figma 50% opacity over dark page).
     for lo, hi, color in _TREND_BANDS:
         y_top = y_for(hi)
         y_bot = y_for(lo)
         parts.append(
             f'<rect x="{plot_x0:.1f}" y="{y_top:.1f}" width="{plot_w:.1f}" '
-            f'height="{max(0.5, y_bot - y_top):.1f}" fill="{color}"/>'
+            f'height="{max(0.5, y_bot - y_top):.1f}" fill="{color}" '
+            f'fill-opacity="{_TREND_BAND_OPACITY}"/>'
         )
 
     # 2) Horizontal guides at 100 and 0 (filled rects survive PDF print).
@@ -257,11 +270,20 @@ def trend_line_chart_svg(
         f'vector-effect="non-scaling-stroke" points="{poly}"/>'
     )
 
-    # 6) Dots + date labels.
+    # 6) Dots + score value labels + date labels.
     for i, (label, score) in enumerate(points):
         x, y = xs[i], y_for(score)
         parts.append(
             f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.1" fill="{_trend_dot_color(score)}"/>'
+        )
+        score_txt = _format_trend_score(score)
+        # Place above-left so neither the vertical guide nor trend line cuts the digits.
+        label_x = x - 4.5
+        label_y = y - 4.5
+        parts.append(
+            f'<text x="{label_x:.1f}" y="{label_y:.1f}" text-anchor="end" '
+            f'font-family="Inter, Helvetica, Arial, sans-serif" font-size="5.5" '
+            f'font-weight="600" fill="#ffffff" letter-spacing="-0.1">{score_txt}</text>'
         )
         parts.append(
             f'<text x="{x:.1f}" y="{height - 2:.1f}" text-anchor="middle" '
